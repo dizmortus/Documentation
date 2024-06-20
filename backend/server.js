@@ -40,6 +40,21 @@ app.post('/api/pages', async (req, res) => {
   }
 });
 
+// DELETE: Удаление страницы по ID
+app.delete('/api/pages/:id', async (req, res) => {
+  const pageId = req.params.id;
+  const pagePath = path.join(pagesDir, `${pageId}.html`);
+
+  try {
+    await fs.unlink(pagePath); // Удаляем файл страницы
+    res.status(200).json({ response: 'success' });
+  } catch (err) {
+    if (err.code === 'ENOENT') return res.status(404).send('Page not found');
+    console.error(err);
+    return res.status(500).send('Error deleting page');
+  }
+});
+
 // GET: Чтение страницы по ID
 app.get('/api/pages/:id', async (req, res) => {
   const pageId = req.params.id;
