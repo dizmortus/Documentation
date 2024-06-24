@@ -1,5 +1,6 @@
 //Файл Documentation/frontend/index.js
 //Файл запуска React приложения
+//import './styles.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';

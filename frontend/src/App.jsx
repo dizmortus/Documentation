@@ -1,5 +1,3 @@
-//Файл Documentation/frontend/App.jsx
-
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
@@ -11,9 +9,9 @@ function App() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        axios.get('/api/pages') // использование Axios для выполнения GET запроса
+        axios.get('/api/pages')
             .then(response => {
-                dispatch({ type: 'SET_PAGES', payload: response.data }); // обновляем страницы в хранилище Redux
+                dispatch({ type: 'SET_PAGES', payload: response.data });
             })
             .catch(error => {
                 console.error(error);
@@ -47,16 +45,15 @@ function App() {
             });
     };
 
-
     return (
-        <div>
+        <div className="container">
             <header>
                 <h1>Техническая документация</h1>
                 <p>Количество страниц: {pageCount}</p>
             </header>
             <nav id="pageMenu">
                 {pages.map(page => (
-                    <div key={page.id}>
+                    <div key={page.id} className="page-item">
                         <a href={`/api/pages/${page.id}`}>
                             {page.title}
                         </a>
