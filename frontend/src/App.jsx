@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import NewPage from './NewPages.jsx';
+import LoginForm from './LoginForm.jsx';
 
 function App() {
     const [title, setTitle] = useState('');
@@ -9,6 +10,21 @@ function App() {
     const pages = useSelector(state => state.pages.pages);
     const pageCount = useSelector(state => state.pages.pageCount);
     const dispatch = useDispatch();
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    const handleLogin = (username, password) => {
+        // Здесь можно добавить логику проверки учетных данных (например, запрос на сервер)
+        // В данном примере просто примитивная проверка
+        if (username === 'user' && password === 'password') {
+            setIsLoggedIn(true);
+        } else {
+            alert('Неверные учетные данные');
+        }
+    };
+
+    const handleLogout = () => {
+        setIsLoggedIn(false);
+    };
 
     useEffect(() => {
         axios.get('/api/pages')
@@ -61,7 +77,13 @@ function App() {
                 ))}
             </nav>
             <main>
-                <input
+            {!isLoggedIn && (
+                    <div className="login-container">
+                        <LoginForm onLogin={handleLogin} />
+                    </div>
+                )}
+                {isLoggedIn && (
+                <div className="content"><input
                     type="text"
                     value={title}
                     onChange={e => setTitle(e.target.value)}
@@ -74,12 +96,14 @@ function App() {
                     cols="50"
                     placeholder="Содержимое страницы (HTML)"
                 ></textarea><br />
-                <button onClick={addPage}>Добавить</button>
+                <button onClick={addPage}>Добавить</button></div>
+                )}
             </main>
             <footer>
                 {/* Футер сайта */}
             </footer>
         </div>
+        
     );
 }
 
