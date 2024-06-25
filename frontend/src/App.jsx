@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import './styles.css';
+import NewPage from './NewPages.jsx';
 
 function App() {
-    const [content, setContent] = useState('');
     const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
     const pages = useSelector(state => state.pages.pages);
     const pageCount = useSelector(state => state.pages.pageCount);
     const dispatch = useDispatch();
@@ -22,7 +22,8 @@ function App() {
 
     const addPage = () => {
         if (title && content) {
-            axios.post('/api/pages', { title, content }, {
+            const newPage = { title, content };
+            axios.post('/api/pages', newPage, {
                 headers: {
                     'Content-Type': 'application/json',
                 }
@@ -56,13 +57,7 @@ function App() {
             </header>
             <nav id="pageMenu">
                 {pages.map(page => (
-                    <div key={page.id} className="page-item">
-                        <a href={`/api/pages/${page.id}`}>
-                            {page.title}
-                        </a>
-                        <button onClick={() => removePage(page.id)}>Удалить</button>
-                        <div dangerouslySetInnerHTML={{ __html: page.content }}></div>
-                    </div>
+                    <NewPage key={page.id} page={page} removePage={removePage} />
                 ))}
             </nav>
             <main>
