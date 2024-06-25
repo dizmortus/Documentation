@@ -5,7 +5,7 @@ const initialState = {
     pageCount: 0,
 };
 
-const pagesReducer = (state = initialState, action) => {
+function pagesReducer(state = initialState, action) {
     switch (action.type) {
         case 'SET_PAGES':
             return {
@@ -28,6 +28,6 @@ const pagesReducer = (state = initialState, action) => {
         default:
             return state;
     }
-};
+}
 
 export default pagesReducer;

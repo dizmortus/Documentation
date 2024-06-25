@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
+import './styles.css';
 
 function App() {
     const [content, setContent] = useState('');
+    const [title, setTitle] = useState('');
     const pages = useSelector(state => state.pages.pages);
     const pageCount = useSelector(state => state.pages.pageCount);
     const dispatch = useDispatch();
@@ -19,14 +21,15 @@ function App() {
     }, [dispatch]);
 
     const addPage = () => {
-        if (content) {
-            axios.post('/api/pages', { content }, {
+        if (title && content) {
+            axios.post('/api/pages', { title, content }, {
                 headers: {
                     'Content-Type': 'application/json',
                 }
             })
                 .then(response => {
                     dispatch({ type: 'ADD_PAGE', payload: response.data });
+                    setTitle('');
                     setContent('');
                 })
                 .catch(error => {
@@ -58,15 +61,23 @@ function App() {
                             {page.title}
                         </a>
                         <button onClick={() => removePage(page.id)}>Удалить</button>
+                        <div dangerouslySetInnerHTML={{ __html: page.content }}></div>
                     </div>
                 ))}
             </nav>
             <main>
+                <input
+                    type="text"
+                    value={title}
+                    onChange={e => setTitle(e.target.value)}
+                    placeholder="Название страницы"
+                /><br />
                 <textarea
                     value={content}
                     onChange={e => setContent(e.target.value)}
                     rows="10"
                     cols="50"
+                    placeholder="Содержимое страницы (HTML)"
                 ></textarea><br />
                 <button onClick={addPage}>Добавить</button>
             </main>
