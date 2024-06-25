@@ -1,8 +1,6 @@
 // Файл Documentation/backend/server.js
 // Сервер Express для обработки запросов и динамического создания HTML страниц.
 
-const session = require('express-session');
-const passport = require('passport');
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs').promises;
@@ -39,15 +37,29 @@ fs.access(pagesDir, fs.constants.F_OK)
 
 // POST: Создание новой страницы
 app.post('/api/pages', async (req, res) => {
-  const { content } = req.body;
-  if (!content) return res.status(400).send('Content is required');
+  const { title, content } = req.body;
+  if (!title || !content) return res.status(400).send('Title and content are required');
 
   const pageId = Date.now().toString();
   const newPagePath = path.join(pagesDir, `${pageId}.html`);
 
+  const pageContent = `
+    <!DOCTYPE html>
+    <html lang="ru">
+    <head>
+      <meta charset="UTF-8">
+      <title>${title}</title>
+      <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+      <h2>${content}</h2>
+    </body>
+    </html>
+  `;
+
   try {
-    await fs.writeFile(newPagePath, content);
-    res.status(201).json({ id: pageId, title: pageId });
+    await fs.writeFile(newPagePath, pageContent);
+    res.status(201).json({ id: pageId, title });
   } catch (err) {
     console.error(err);
     return res.status(500).send('Error creating page');
@@ -75,7 +87,7 @@ app.get('/api/pages/:id', async (req, res) => {
   const pagePath = path.join(pagesDir, `${pageId}.html`);
 
   try {
-    const content = await fs.readFile(pagePath);
+    const content = await fs.readFile(pagePath, 'utf8');
     res.setHeader('Content-Type', 'text/html');
     res.send(content);
   } catch (err) {
@@ -114,7 +126,11 @@ app.get('/profile', (req, res) => {
 app.get('/api/pages', async (req, res) => {
   try {
     const files = await fs.readdir(pagesDir);
-    const pages = files.map(file => ({ id: path.basename(file, '.html'), title: path.basename(file, '.html') }));
+    const pages = await Promise.all(files.map(async (file) => {
+      const content = await fs.readFile(path.join(pagesDir, file), 'utf8');
+      const title = content.match(/<title>(.*?)<\/title>/)?.[1] || path.basename(file, '.html');
+      return { id: path.basename(file, '.html'), title };
+    }));
     res.json(pages);
   } catch (err) {
     console.error(err);

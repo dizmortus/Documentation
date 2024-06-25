@@ -1,12 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
+import NewPage from './NewPages.jsx';
+import LoginForm from './LoginForm.jsx';
 
 function App() {
+    const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const pages = useSelector(state => state.pages.pages);
     const pageCount = useSelector(state => state.pages.pageCount);
     const dispatch = useDispatch();
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    const handleLogin = (username, password) => {
+        // Здесь можно добавить логику проверки учетных данных (например, запрос на сервер)
+        // В данном примере просто примитивная проверка
+        if (username === 'user' && password === 'password') {
+            setIsLoggedIn(true);
+        } else {
+            alert('Неверные учетные данные');
+        }
+    };
+
+    const handleLogout = () => {
+        setIsLoggedIn(false);
+    };
 
     useEffect(() => {
         axios.get('/api/pages')
@@ -19,14 +37,16 @@ function App() {
     }, [dispatch]);
 
     const addPage = () => {
-        if (content) {
-            axios.post('/api/pages', { content }, {
+        if (title && content) {
+            const newPage = { title, content };
+            axios.post('/api/pages', newPage, {
                 headers: {
                     'Content-Type': 'application/json',
                 }
             })
                 .then(response => {
                     dispatch({ type: 'ADD_PAGE', payload: response.data });
+                    setTitle('');
                     setContent('');
                 })
                 .catch(error => {
@@ -53,28 +73,39 @@ function App() {
             </header>
             <nav id="pageMenu">
                 {pages.map(page => (
-                    <div key={page.id} className="page-item">
-                        <a href={`/api/pages/${page.id}`}>
-                            {page.title}
-                        </a>
-                        <button onClick={() => removePage(page.id)}>Удалить</button>
-                    </div>
+                    <NewPage key={page.id} page={page} removePage={removePage} />
                 ))}
             </nav>
             <main>
+            {!isLoggedIn && (
+                    <div className="login-container">
+                        <LoginForm onLogin={handleLogin} />
+                    </div>
+                )}
+                {isLoggedIn && (
+                <div className="content"><input
+                    type="text"
+                    value={title}
+                    onChange={e => setTitle(e.target.value)}
+                    placeholder="Название страницы"
+                /><br />
                 <textarea
                     value={content}
                     onChange={e => setContent(e.target.value)}
                     rows="10"
                     cols="50"
+                    placeholder="Содержимое страницы (HTML)"
                 ></textarea><br />
-                <button onClick={addPage}>Добавить</button>
-                <button a href="/auth/login">Auth</button>
+
+                <button onClick={addPage}>Добавить</button></div>
+                )}
+
             </main>
             <footer>
                 {/* Футер сайта */}
             </footer>
         </div>
+        
     );
 }
 
