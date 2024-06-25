@@ -7,7 +7,7 @@ const LoginForm = ({ onLogin }) => {
     const [password, setPassword] = useState('');
 
     const handleLogin = () => {
-        axios.post('/api/login', { username, password })
+        axios.post('/api/auth/login', { username, password })
             .then(response => {
                 // Успешная обработка ответа от сервера
                 console.log(response.data); // Здесь можно обработать данные с сервера

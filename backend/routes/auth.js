@@ -3,28 +3,31 @@ const router = express.Router();
 const passport = require('passport');
 const User = require('../models/User');
 
-router.get('/login', (req, res) => res.render('login'));
-router.get('/register', (req, res) => res.render('register'));
-
 router.post('/register', async (req, res) => {
-  const { username, password} = req.body;
+  const { username, password } = req.body;
   try {
-    const user = await User.create({ username, password ,role:"user"});
-    res.redirect('/auth/login');
+    const user = await User.create({ username, password,role:"user" });
+    res.status(201).json(user);
   } catch (err) {
-    res.redirect('/auth/register');
+    res.status(400).json({ error: 'Username already exists' });
   }
 });
 
-router.post('/login', passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: '/auth/login'
-}));
+router.post('/login', (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) return next(err);
+    if (!user) return res.status(400).json({ error: info.message });
+    req.login(user, err => {
+      if (err) return next(err);
+      return res.json(user);
+    });
+  })(req, res, next);
+});
 
 router.get('/logout', (req, res) => {
   req.logout(err => {
     if (err) return next(err);
-    res.redirect('/auth/login');
+    res.json({ message: 'Logged out' });
   });
 });
 

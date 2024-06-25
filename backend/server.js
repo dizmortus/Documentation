@@ -29,7 +29,7 @@ app.use(express.static(path.join(__dirname, '..', 'frontend', 'build'))); // С�
 const pagesDir = path.join(__dirname, 'pages'); // Папка для страниц
 const sequelize = require('./config/database');
 const User = require('./models/User');
-sequelize.sync({force:true}).then(() => {
+sequelize.sync(2).then(() => {
   console.log("Database synchronized");
 });
 // Проверка существования папки или её создание
@@ -140,6 +140,6 @@ app.get('/api/pages', async (req, res) => {
     return res.status(500).send('Error retrieving pages');
   }
 });
-app.use('/auth', require('./routes/auth'));
+app.use('/api/auth', require('./routes/auth'));
 const PORT = process.env.PORT || 3000; // Порт сервера
 app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`)); // Запуск сервера
