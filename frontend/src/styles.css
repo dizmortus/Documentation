@@ -1,138 +1,75 @@
-/* Общие стили для всей страницы */
+/* styles.css */
+
 body {
   font-family: Arial, sans-serif;
-  background-color: #f0f0f0;
   margin: 0;
   padding: 0;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
   height: 100vh;
 }
 
-.container {
-  width: 80%;
-  max-width: 800px;
-  background-color: #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  overflow: hidden;
-  padding: 20px;
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
-.page-item a {
-  font-size: 1.2rem; 
-  color: #007bff; 
-  text-decoration: none; 
-  font-weight: bold; 
-}
-
-.page-item a:hover {
-  text-decoration: underline; 
-}
-
-/* Стили для заголовка */
 header {
   background-color: #f8f8f8;
-  padding: 20px;
+  padding: 10px;
   text-align: center;
-  border-bottom: 1px solid #e0e0e0;
+  position: relative;
 }
 
 header h1 {
   margin: 0;
-  font-size: 24px;
-  color: #333;
 }
 
 header p {
-  margin: 5px 0 0 0;
-  color: #777;
+  margin: 5px 0;
 }
 
-/* Стили для навигации */
-#pageMenu {
-  background-color: #e8e8e8;
-  padding: 15px;
-  border-bottom: 1px solid #d0d0d0;
-  margin: 20px 0;
-}
-
-.page-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-#pageMenu a {
-  color: #333;
-  text-decoration: none;
-  font-size: 18px;
-  flex-grow: 1;
-}
-
-#pageMenu a:hover {
-  color: #007BFF;
-}
-
-#pageMenu button {
-  background-color: #ff4d4d;
-  color: #fff;
-  border: none;
+.auth-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
   padding: 5px 10px;
-  border-radius: 4px;
   cursor: pointer;
 }
 
-#pageMenu button:hover {
-  background-color: #e60000;
+.content {
+  display: flex;
+  flex: 1;
 }
 
-/* Стили для основного контента */
+nav#pageMenu {
+  background-color: #e8e8e8;
+  padding: 10px;
+  width: 200px;
+  overflow-y: auto;
+}
+
 main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+.page-editor {
   text-align: center;
 }
 
-main textarea {
-  width: 90%;
-  height: 150px;
-  padding: 10px;
-  margin-top: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
+.page-editor input, .page-editor textarea {
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 10px;
 }
 
-main input {
-  width: 90%;
-  height: 25px;
-  padding: 10px;
-  margin-top: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-}
-
-main button {
-  margin-top: 10px;
-  padding: 10px 20px;
-  font-size: 16px;
-  color: #fff;
-  background-color: #007BFF;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-main button:hover {
-  background-color: #0056b3;
-}
-
-/* Стили для футера */
 footer {
   background-color: #f8f8f8;
   padding: 10px;
   text-align: center;
-  border-top: 1px solid #e0e0e0;
 }

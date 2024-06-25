@@ -12,10 +12,11 @@ function App() {
     const dispatch = useDispatch();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+    const [showLoginForm, setShowLoginForm] = useState(false);
+
     const handleLogin = (username, password) => {
-        // Здесь можно добавить логику проверки учетных данных (например, запрос на сервер)
-        // В данном примере просто примитивная проверка
-        
+        setIsLoggedIn(true);
+        setShowLoginForm(false);
     };
 
     const handleLogout = () => {
@@ -62,46 +63,52 @@ function App() {
     };
 
     return (
-        <div className="container">
+        <div className="app">
             <header>
                 <h1>Техническая документация</h1>
                 <p>Количество страниц: {pageCount}</p>
+                {isLoggedIn ? (
+                    <button onClick={handleLogout} className="auth-button">Выйти</button>
+                ) : (
+                    <button onClick={() => setShowLoginForm(true)} className="auth-button">Войти</button>
+                )}
             </header>
-            <nav id="pageMenu">
-                {pages.map(page => (
-                    <NewPage key={page.id} page={page} removePage={removePage} />
-                ))}
-            </nav>
-            <main>
-            {!isLoggedIn && (
-                    <div className="login-container">
-                        <LoginForm onLogin={handleLogin} />
-                    </div>
-                )}
-                {isLoggedIn && (
-                <div className="content"><input
-                    type="text"
-                    value={title}
-                    onChange={e => setTitle(e.target.value)}
-                    placeholder="Название страницы"
-                /><br />
-                <textarea
-                    value={content}
-                    onChange={e => setContent(e.target.value)}
-                    rows="10"
-                    cols="50"
-                    placeholder="Содержимое страницы (HTML)"
-                ></textarea><br />
-
-                <button onClick={addPage}>Добавить</button></div>
-                )}
-
-            </main>
+            <div className="content">
+                <nav id="pageMenu">
+                    {pages.map(page => (
+                        <NewPage key={page.id} page={page} removePage={removePage} />
+                    ))}
+                </nav>
+                <main>
+                    {!isLoggedIn && showLoginForm && (
+                        <div className="login-container">
+                            <LoginForm onLogin={handleLogin} />
+                        </div>
+                    )}
+                    {isLoggedIn && (
+                        <div className="page-editor">
+                            <input
+                                type="text"
+                                value={title}
+                                onChange={e => setTitle(e.target.value)}
+                                placeholder="Название страницы"
+                            /><br />
+                            <textarea
+                                value={content}
+                                onChange={e => setContent(e.target.value)}
+                                rows="10"
+                                cols="50"
+                                placeholder="Содержимое страницы (HTML)"
+                            ></textarea><br />
+                            <button onClick={addPage}>Добавить</button>
+                        </div>
+                    )}
+                </main>
+            </div>
             <footer>
-                {/* Футер сайта */}
+                Сделали студенты с БНТУ
             </footer>
         </div>
-        
     );
 }
 
