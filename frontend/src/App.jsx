@@ -96,8 +96,10 @@ function App() {
                     cols="50"
                     placeholder="Содержимое страницы (HTML)"
                 ></textarea><br />
+
                 <button onClick={addPage}>Добавить</button></div>
                 )}
+
             </main>
             <footer>
                 {/* Футер сайта */}
