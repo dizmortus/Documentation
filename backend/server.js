@@ -29,7 +29,7 @@ app.use(express.static(path.join(__dirname, '..', 'frontend', 'build'))); // С�
 const pagesDir = path.join(__dirname, 'pages'); // Папка для страниц
 const sequelize = require('./config/database');
 const User = require('./models/User');
-sequelize.sync(2).then(() => {
+sequelize.sync().then(() => {
   console.log("Database synchronized");
 });
 // Проверка существования папки или её создание

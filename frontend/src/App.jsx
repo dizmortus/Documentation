@@ -15,11 +15,7 @@ function App() {
     const handleLogin = (username, password) => {
         // Здесь можно добавить логику проверки учетных данных (например, запрос на сервер)
         // В данном примере просто примитивная проверка
-        if (username === 'user' && password === 'password') {
-            setIsLoggedIn(true);
-        } else {
-            alert('Неверные учетные данные');
-        }
+        
     };
 
     const handleLogout = () => {
