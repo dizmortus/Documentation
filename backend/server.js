@@ -2,6 +2,9 @@
 // Сервер Express для обработки запросов и динамического создания HTML страниц.
 
 const express = require('express');
+const session = require('express-session');
+const passport = require('passport');
+const bodyParser = require('body-parser');
 const cors = require('cors');
 const fs = require('fs').promises;
 const path = require('path');
