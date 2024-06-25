@@ -55,7 +55,7 @@ app.post('/api/pages', async (req, res) => {
       <link rel="stylesheet" href="styles.css">
     </head>
     <body>
-      <h2>${content}</h2>
+      ${content}
     </body>
     </html>
   `;
