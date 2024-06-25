@@ -28,6 +28,7 @@ app.use(express.static(path.join(__dirname, '..', 'frontend', 'build'))); // С�
 
 const pagesDir = path.join(__dirname, 'pages'); // Папка для страниц
 const sequelize = require('./config/database');
+const checkRole = require('./middleware/checkRole');
 const User = require('./models/User');
 sequelize.sync().then(() => {
   console.log("Database synchronized");
@@ -39,7 +40,7 @@ fs.access(pagesDir, fs.constants.F_OK)
   });
 
 // POST: Создание новой страницы
-app.post('/api/pages', async (req, res) => {
+app.post('/api/pages',checkRole('admin'), async (req, res) => {
   const { title, content } = req.body;
   if (!title || !content) return res.status(400).send('Title and content are required');
 
@@ -70,7 +71,7 @@ app.post('/api/pages', async (req, res) => {
 });
 
 // DELETE: Удаление страницы по ID
-app.delete('/api/pages/:id', async (req, res) => {
+app.delete('/api/pages/:id',checkRole('admin'), async (req, res) => {
   const pageId = req.params.id;
   const pagePath = path.join(pagesDir, `${pageId}.html`);
 
@@ -99,32 +100,9 @@ app.get('/api/pages/:id', async (req, res) => {
     return res.status(500).send('Error reading page');
   }
 });
-/* 
-app.get('/', (req, res) => {
-  if (req.isAuthenticated()) {
-    if (req.user.role === 'admin') {
-      //res.render('admin', { user: req.user });
-    } else {
-      //res.render('user', { user: req.user });
-    }
-  } else {
-    //res.render('index');
-  }
-});
-// Маршрут, доступный только админам
-app.get('/admin/add-page', checkRole('admin'), (req, res) => {
-  //res.render('add-page');
-});
 
-// Маршрут для профиля пользователя
-app.get('/profile', (req, res) => {
-  if (req.isAuthenticated()) {
-    //res.render('profile', { user: req.user });
-  } else {
-    //res.status(401).render('error', { message: 'Unauthorized' });
-  }
-});
-*/
+
+
 // GET: Список всех страниц
 app.get('/api/pages', async (req, res) => {
   try {
@@ -141,5 +119,13 @@ app.get('/api/pages', async (req, res) => {
   }
 });
 app.use('/api/auth', require('./routes/auth'));
+
+app.get('/profile', (req, res) => {
+  if (req.isAuthenticated()) {
+    res.send(`<h1>Profile of ${req.user.username}</h1><p>Role: ${req.user.role}</p><a href="/logout">Logout</a>`);
+  } else {
+    res.status(401).send('Unauthorized');
+  }
+});
 const PORT = process.env.PORT || 3000; // Порт сервера
 app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`)); // Запуск сервера
