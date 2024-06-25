@@ -1,6 +1,8 @@
 // Файл Documentation/backend/server.js
 // Сервер Express для обработки запросов и динамического создания HTML страниц.
 
+const session = require('express-session');
+const passport = require('passport');
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs').promises;
@@ -11,12 +13,24 @@ require('dotenv').config(); // Загрузка переменных окруж�
 const app = express(); // Экземпляр приложения
 
 app.use(express.json()); // Middleware для JSON
-app.use(express.urlencoded({ extended: true })); // Middleware для urlencoded данных
+app.use(express.urlencoded({ extended: true })); 
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+require('./config/passport')(passport);// Middleware для urlencoded данных
 app.use(cors()); // CORS для кросс-доменных запросов
 app.use(express.static(path.join(__dirname, '..', 'frontend', 'build'))); // Статические файлы React
 
 const pagesDir = path.join(__dirname, 'pages'); // Папка для страниц
-
+const sequelize = require('./config/database');
+const User = require('./models/User');
+sequelize.sync({force:true}).then(() => {
+  console.log("Database synchronized");
+});
 // Проверка существования папки или её создание
 fs.access(pagesDir, fs.constants.F_OK)
   .catch(() => {
@@ -70,7 +84,32 @@ app.get('/api/pages/:id', async (req, res) => {
     return res.status(500).send('Error reading page');
   }
 });
+/* 
+app.get('/', (req, res) => {
+  if (req.isAuthenticated()) {
+    if (req.user.role === 'admin') {
+      //res.render('admin', { user: req.user });
+    } else {
+      //res.render('user', { user: req.user });
+    }
+  } else {
+    //res.render('index');
+  }
+});
+// Маршрут, доступный только админам
+app.get('/admin/add-page', checkRole('admin'), (req, res) => {
+  //res.render('add-page');
+});
 
+// Маршрут для профиля пользователя
+app.get('/profile', (req, res) => {
+  if (req.isAuthenticated()) {
+    //res.render('profile', { user: req.user });
+  } else {
+    //res.status(401).render('error', { message: 'Unauthorized' });
+  }
+});
+*/
 // GET: Список всех страниц
 app.get('/api/pages', async (req, res) => {
   try {
@@ -82,6 +121,6 @@ app.get('/api/pages', async (req, res) => {
     return res.status(500).send('Error retrieving pages');
   }
 });
-
+app.use('/auth', require('./routes/auth'));
 const PORT = process.env.PORT || 3000; // Порт сервера
 app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`)); // Запуск сервера

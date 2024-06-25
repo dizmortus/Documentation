@@ -69,6 +69,7 @@ function App() {
                     cols="50"
                 ></textarea><br />
                 <button onClick={addPage}>Добавить</button>
+                <button a href="/auth/login">Auth</button>
             </main>
             <footer>
                 {/* Футер сайта */}
