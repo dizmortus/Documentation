@@ -32,9 +32,10 @@ module.exports = function(passport) {
     done(null, token);
   });
 
-  passport.deserializeUser(async function(id, done) {
+  passport.deserializeUser(async function(token, done) {
     try {
-      const user = await User.findByPk(id);
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const user = await User.findByPk(decoded.id);
       done(null, user);
     } catch (err) {
       done(err);
