@@ -9,18 +9,17 @@ function App() {
     const [content, setContent] = useState('');
     const pages = useSelector(state => state.pages.pages);
     const pageCount = useSelector(state => state.pages.pageCount);
+    const user = useSelector(state => state.user.user);
     const dispatch = useDispatch();
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-
     const [showLoginForm, setShowLoginForm] = useState(false);
 
-    const handleLogin = (username, password) => {
-        setIsLoggedIn(true);
+    const handleLogin = (userData) => {
+        dispatch({ type: 'SET_USER', payload: userData });
         setShowLoginForm(false);
     };
 
     const handleLogout = () => {
-        setIsLoggedIn(false);
+        dispatch({ type: 'LOGOUT_USER' });
     };
 
     useEffect(() => {
@@ -61,6 +60,8 @@ function App() {
                 console.error(error);
             });
     };
+
+    const isLoggedIn = !!user;
 
     return (
         <div className="app">
