@@ -7,6 +7,7 @@ import NewPage from './NewPages.jsx';
 import LoginForm from './LoginForm.jsx';
 import RegisterForm from './RegisterForm.jsx';
 
+
 function App() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
@@ -82,7 +83,6 @@ function App() {
         });
     };
     
-
     const isLoggedIn = !!user;
     const isAdmin = user?.role === 'admin';
     const isUser = user?.role === 'user';

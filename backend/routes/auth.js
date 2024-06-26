@@ -19,8 +19,19 @@ router.post('/login', (req, res, next) => {
     if (err) return next(err);
     if (!user) return res.status(401).json({ error: info.message });
     
-    const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.json({ token });
+    req.login(user, err => {
+      if (err) return next(err);
+
+      const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET);
+      return res.json({
+        token,
+        user: {
+          id: user.id,
+          username: user.username,
+          role: user.role
+        }
+      });
+    });
   })(req, res, next);
 });
 

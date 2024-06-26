@@ -10,9 +10,10 @@ const LoginForm = ({ onLogin }) => {
         axios.post('/api/auth/login', { username, password })
             .then(response => {
 
-                const { token } = response.data;
+                const { token ,user} = response.data;
                 localStorage.setItem('jwtToken', token);
-                onLogin();
+                
+                onLogin(user);
 
                 alert("Вы успешно зашли как " + username);
             })
