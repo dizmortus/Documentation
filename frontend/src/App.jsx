@@ -6,6 +6,7 @@ import axios from 'axios';
 import NewPage from './NewPages.jsx';
 import LoginForm from './LoginForm.jsx';
 import RegisterForm from './RegisterForm.jsx';
+import './styles.css';
 
 
 function App() {
@@ -139,7 +140,7 @@ function App() {
                             <button onClick={addPage}>Добавить</button>
                         </div>
                     )}
-                    {isLoggedIn && (isAdmin || isUser) && (
+                    {isLoggedIn && (3 || isUser) && (
                         <div className="comment-section">
                             {/* Курилл добавь комменты сюда */}
                         </div>

@@ -1,0 +1,27 @@
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
+
+const Comment = sequelize.define('Comment', {
+    userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    pageId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    comment: {
+        type: DataTypes.TEXT,
+        allowNull: false
+    },
+    createdAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
+    }
+});
+
+module.exports = Comment;
