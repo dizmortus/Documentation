@@ -10,7 +10,7 @@ const RegisterForm = ({ onRegister }) => {
 
     const handleRegister = (e) => {
         e.preventDefault();
-        axios.post('/api/register', { username, password })
+        axios.post('/api/auth/register', { username, password })
             .then(response => {
                 onRegister(response.data); // обработка успешной регистрации
             })

@@ -71,6 +71,8 @@ function App() {
     };
 
     const isLoggedIn = !!user;
+    const isAdmin = user?.role === 'admin';
+    const isUser = user?.role === 'user';
 
     return (
         <div className="app">
@@ -105,7 +107,7 @@ function App() {
                             <RegisterForm onRegister={handleRegister} />
                         </div>
                     )}
-                    {isLoggedIn && (
+                    {isLoggedIn && isAdmin && (
                         <div className="page-editor">
                             <input
                                 type="text"
@@ -113,7 +115,7 @@ function App() {
                                 onChange={e => setTitle(e.target.value)}
                                 placeholder="Название страницы"
                             /><br />
-                             <CKEditor
+                            <CKEditor
                                 editor={ClassicEditor}
                                 data={content}
                                 onChange={(event, editor) => {
@@ -122,6 +124,11 @@ function App() {
                                 }}
                             /><br />
                             <button onClick={addPage}>Добавить</button>
+                        </div>
+                    )}
+                    {isLoggedIn && (isAdmin || isUser) && (
+                        <div className="comment-section">
+                            {/* Курилл добавь комменты сюда */}
                         </div>
                     )}
                 </main>

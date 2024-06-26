@@ -71,7 +71,7 @@ app.post('/api/pages', checkRole('admin'), async (req, res) => {
 });
 
 // DELETE: Удаление страницы по ID
-app.delete('/api/pages/:id',checkRole('admin'), async (req, res) => {
+app.delete('/api/pages/:id', async (req, res) => {
   const pageId = req.params.id;
   const pagePath = path.join(pagesDir, `${pageId}.html`);
 
