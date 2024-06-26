@@ -56,7 +56,7 @@ fs.access(pagesDir, fs.constants.F_OK)
 }
 
 // POST: Создание новой страницы
-app.post('/api/pages',isAuthenticated,checkRole('user'), async (req, res) => {
+app.post('/api/pages',isAuthenticated,checkRole('admin'), async (req, res) => {
   const { title, content } = req.body;
   if (!title || !content) return res.status(400).send('Title and content are required');
 
@@ -87,7 +87,7 @@ app.post('/api/pages',isAuthenticated,checkRole('user'), async (req, res) => {
 });
 
 // DELETE: Удаление страницы по ID
-app.delete('/api/pages/:id',isAuthenticated,checkRole('user'), async (req, res) => {
+app.delete('/api/pages/:id',isAuthenticated,checkRole('admin'), async (req, res) => {
   const pageId = req.params.id;
   const pagePath = path.join(pagesDir, `${pageId}.html`);
 
