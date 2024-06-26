@@ -11,6 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^41.4.2",
+    "@ckeditor/ckeditor5-react": "^7.0.0",
     "@reduxjs/toolkit": "^2.2.5",
     "axios": "^1.7.2",
     "react": "^18.3.1",

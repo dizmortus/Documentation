@@ -1,26 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import axios from 'axios';
 import NewPage from './NewPages.jsx';
 import LoginForm from './LoginForm.jsx';
+import RegisterForm from './RegisterForm.jsx';
 
 function App() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const pages = useSelector(state => state.pages.pages);
     const pageCount = useSelector(state => state.pages.pageCount);
+    const user = useSelector(state => state.user.user);
     const dispatch = useDispatch();
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-
     const [showLoginForm, setShowLoginForm] = useState(false);
+    const [showRegisterForm, setShowRegisterForm] = useState(false);
 
-    const handleLogin = (username, password) => {
-        setIsLoggedIn(true);
+    const handleLogin = (userData) => {
+        dispatch({ type: 'SET_USER', payload: userData });
         setShowLoginForm(false);
     };
 
+    const handleRegister = (userData) => {
+        dispatch({ type: 'SET_USER', payload: userData });
+        setShowRegisterForm(false);
+    };
+
     const handleLogout = () => {
-        setIsLoggedIn(false);
+        dispatch({ type: 'LOGOUT_USER' });
     };
 
     useEffect(() => {
@@ -75,21 +83,30 @@ function App() {
     };
     
 
+    const isLoggedIn = !!user;
+    const isAdmin = user?.role === 'admin';
+    const isUser = user?.role === 'user';
+
     return (
         <div className="app">
             <header>
                 <h1>Техническая документация</h1>
                 <p>Количество страниц: {pageCount}</p>
-                {isLoggedIn ? (
-                    <button onClick={handleLogout} className="auth-button">Выйти</button>
-                ) : (
-                    <button onClick={() => setShowLoginForm(true)} className="auth-button">Войти</button>
-                )}
+                <div className="auth-buttons">
+                    {isLoggedIn ? (
+                        <button onClick={handleLogout} className="auth-button">Выйти</button>
+                    ) : (
+                        <>
+                            <button onClick={() => setShowLoginForm(true)} className="auth-button">Войти</button>
+                            <button onClick={() => setShowRegisterForm(true)} className="auth-button">Зарегистрироваться</button>
+                        </>
+                    )}
+                </div>
             </header>
             <div className="content">
                 <nav id="pageMenu">
                     {pages.map(page => (
-                        <NewPage key={page.id} page={page} removePage={removePage} />
+                        <NewPage key={page.id} page={page} removePage={isLoggedIn && isAdmin ? removePage : null} />
                     ))}
                 </nav>
                 <main>
@@ -98,7 +115,12 @@ function App() {
                             <LoginForm onLogin={handleLogin} />
                         </div>
                     )}
-                    {isLoggedIn && (
+                    {!isLoggedIn && showRegisterForm && (
+                        <div className="register-container">
+                            <RegisterForm onRegister={handleRegister} />
+                        </div>
+                    )}
+                    {isLoggedIn && isAdmin && (
                         <div className="page-editor">
                             <input
                                 type="text"
@@ -106,20 +128,26 @@ function App() {
                                 onChange={e => setTitle(e.target.value)}
                                 placeholder="Название страницы"
                             /><br />
-                            <textarea
-                                value={content}
-                                onChange={e => setContent(e.target.value)}
-                                rows="10"
-                                cols="50"
-                                placeholder="Содержимое страницы (HTML)"
-                            ></textarea><br />
+                            <CKEditor
+                                editor={ClassicEditor}
+                                data={content}
+                                onChange={(event, editor) => {
+                                    const data = editor.getData();
+                                    setContent(data);
+                                }}
+                            /><br />
                             <button onClick={addPage}>Добавить</button>
+                        </div>
+                    )}
+                    {isLoggedIn && (isAdmin || isUser) && (
+                        <div className="comment-section">
+                            {/* Курилл добавь комменты сюда */}
                         </div>
                     )}
                 </main>
             </div>
             <footer>
-                Сделали студенты с БНТУ
+                <a>Сделали студенты из БНТУ</a>
             </footer>
         </div>
     );
