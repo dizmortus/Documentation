@@ -93,7 +93,7 @@ function App() {
             <div className="content">
                 <nav id="pageMenu">
                     {pages.map(page => (
-                        <NewPage key={page.id} page={page} removePage={removePage} />
+                        <NewPage key={page.id} page={page} removePage={isLoggedIn && isAdmin ? removePage : null} />
                     ))}
                 </nav>
                 <main>
