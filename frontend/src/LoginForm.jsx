@@ -1,17 +1,19 @@
-// LoginForm.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
 
 const LoginForm = ({ onLogin }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const dispatch = useDispatch();
 
     const handleLogin = () => {
         axios.post('/api/auth/login', { username, password })
             .then(response => {
                 // Успешная обработка ответа от сервера
                 console.log(response.data); // Здесь можно обработать данные с сервера
-                onLogin(); // Вызываем функцию, переданную из родительского компонента
+                dispatch({ type: 'SET_USER', payload: response.data });
+                onLogin(response.data); // Передаем данные пользователя
                 alert("Вы успешно зашли как " + username);
             })
             .catch(error => {
