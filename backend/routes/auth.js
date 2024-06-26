@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const User = require('../models/User');
+const jwt = require('jsonwebtoken');
 
 router.post('/register', async (req, res) => {
   const { username, password } = req.body;
@@ -16,11 +17,10 @@ router.post('/register', async (req, res) => {
 router.post('/login', (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
     if (err) return next(err);
-    if (!user) return res.status(418).json({ error: info.message });
-    req.login(user, err => {
-      if (err) return next(err);
-      return res.json(user);
-    });
+    if (!user) return res.status(401).json({ error: info.message });
+    
+    const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.json({ token });
   })(req, res, next);
 });
 

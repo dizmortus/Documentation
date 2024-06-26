@@ -38,19 +38,25 @@ fs.access(pagesDir, fs.constants.F_OK)
   .catch(() => {
     fs.mkdir(pagesDir, { recursive: true }).catch(err => console.error(err));
   });
-function isAuthenticated(req, res, next) {
-    const token = req.headers['authorization'];
-    console.log(token);
+  function isAuthenticated(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    if (!authHeader) return res.status(401).send('Unauthorized');
+
+    const token = authHeader.split(' ')[1];
     if (!token) return res.status(401).send('Unauthorized');
-  
+    
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-      if (err) return res.status(401).send('Unauthorized');
+      if (err) {
+        console.error(err);
+        return res.status(401).send('Unauthorized');
+      }
       req.user = user;
       next();
     });
-  }
+}
+
 // POST: Создание новой страницы
-app.post('/api/pages', async (req, res) => {
+app.post('/api/pages',isAuthenticated,checkRole('user'), async (req, res) => {
   const { title, content } = req.body;
   if (!title || !content) return res.status(400).send('Title and content are required');
 
@@ -81,7 +87,7 @@ app.post('/api/pages', async (req, res) => {
 });
 
 // DELETE: Удаление страницы по ID
-app.delete('/api/pages/:id', async (req, res) => {
+app.delete('/api/pages/:id',isAuthenticated,checkRole('user'), async (req, res) => {
   const pageId = req.params.id;
   const pagePath = path.join(pagesDir, `${pageId}.html`);
 
@@ -130,12 +136,9 @@ app.get('/api/pages', async (req, res) => {
 });
 app.use('/api/auth', require('./routes/auth'));
 
-app.get('/profile', (req, res) => {
-  if (req.isAuthenticated()) {
+app.get('/profile',isAuthenticated, (req, res) => {
     res.send(`<h1>Profile of ${req.user.username}</h1><p>Role: ${req.user.role}</p><a href="/logout">Logout</a>`);
-  } else {
-    res.status(401).send('Unauthorized');
   }
-});
+);
 const PORT = process.env.PORT || 3000; // Порт сервера
 app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`)); // Запуск сервера

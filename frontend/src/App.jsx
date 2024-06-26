@@ -24,43 +24,56 @@ function App() {
     };
 
     useEffect(() => {
-        axios.get('/api/pages')
-            .then(response => {
-                dispatch({ type: 'SET_PAGES', payload: response.data });
-            })
-            .catch(error => {
-                console.error(error);
-            });
+        const token = localStorage.getItem('jwtToken');
+        axios.get('/api/pages', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            dispatch({ type: 'SET_PAGES', payload: response.data });
+        })
+        .catch(error => {
+            console.error(error);
+        });
     }, [dispatch]);
-
+    
     const addPage = () => {
+        const token = localStorage.getItem('jwtToken');
         if (title && content) {
             const newPage = { title, content };
             axios.post('/api/pages', newPage, {
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
                 }
             })
-                .then(response => {
-                    dispatch({ type: 'ADD_PAGE', payload: response.data });
-                    setTitle('');
-                    setContent('');
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        }
-    };
-
-    const removePage = (pageId) => {
-        axios.delete(`/api/pages/${pageId}`)
-            .then(() => {
-                dispatch({ type: 'REMOVE_PAGE', payload: pageId });
+            .then(response => {
+                dispatch({ type: 'ADD_PAGE', payload: response.data });
+                setTitle('');
+                setContent('');
             })
             .catch(error => {
                 console.error(error);
             });
+        }
     };
+    
+    const removePage = (pageId) => {
+        const token = localStorage.getItem('jwtToken');
+        axios.delete(`/api/pages/${pageId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(() => {
+            dispatch({ type: 'REMOVE_PAGE', payload: pageId });
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    };
+    
 
     return (
         <div className="app">

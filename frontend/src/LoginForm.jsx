@@ -9,17 +9,17 @@ const LoginForm = ({ onLogin }) => {
     const handleLogin = () => {
         axios.post('/api/auth/login', { username, password })
             .then(response => {
-                // Успешная обработка ответа от сервера
-                console.log(response.data); // Здесь можно обработать данные с сервера
-                onLogin(); // Вызываем функцию, переданную из родительского компонента
+                const { token } = response.data;
+                localStorage.setItem('jwtToken', token);
+                onLogin();
                 alert("Вы успешно зашли как " + username);
             })
             .catch(error => {
-                // Обработка ошибок
                 alert("Неверные данные!");
                 console.log("Неверные данные!");
             });
     };
+    
 
     return (
         <div className="login-form">
