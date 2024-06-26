@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import axios from 'axios';
 import NewPage from './NewPages.jsx';
 import LoginForm from './LoginForm.jsx';
@@ -111,13 +113,14 @@ function App() {
                                 onChange={e => setTitle(e.target.value)}
                                 placeholder="Название страницы"
                             /><br />
-                            <textarea
-                                value={content}
-                                onChange={e => setContent(e.target.value)}
-                                rows="10"
-                                cols="50"
-                                placeholder="Содержимое страницы (HTML)"
-                            ></textarea><br />
+                             <CKEditor
+                                editor={ClassicEditor}
+                                data={content}
+                                onChange={(event, editor) => {
+                                    const data = editor.getData();
+                                    setContent(data);
+                                }}
+                            /><br />
                             <button onClick={addPage}>Добавить</button>
                         </div>
                     )}
