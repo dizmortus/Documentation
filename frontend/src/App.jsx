@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import NewPage from './NewPages.jsx';
 import LoginForm from './LoginForm.jsx';
+import RegisterForm from './RegisterForm.jsx';
 
 function App() {
     const [title, setTitle] = useState('');
@@ -12,10 +13,16 @@ function App() {
     const user = useSelector(state => state.user.user);
     const dispatch = useDispatch();
     const [showLoginForm, setShowLoginForm] = useState(false);
+    const [showRegisterForm, setShowRegisterForm] = useState(false);
 
     const handleLogin = (userData) => {
         dispatch({ type: 'SET_USER', payload: userData });
         setShowLoginForm(false);
+    };
+
+    const handleRegister = (userData) => {
+        dispatch({ type: 'SET_USER', payload: userData });
+        setShowRegisterForm(false);
     };
 
     const handleLogout = () => {
@@ -68,11 +75,16 @@ function App() {
             <header>
                 <h1>Техническая документация</h1>
                 <p>Количество страниц: {pageCount}</p>
-                {isLoggedIn ? (
-                    <button onClick={handleLogout} className="auth-button">Выйти</button>
-                ) : (
-                    <button onClick={() => setShowLoginForm(true)} className="auth-button">Войти</button>
-                )}
+                <div className="auth-buttons">
+                    {isLoggedIn ? (
+                        <button onClick={handleLogout} className="auth-button">Выйти</button>
+                    ) : (
+                        <>
+                            <button onClick={() => setShowLoginForm(true)} className="auth-button">Войти</button>
+                            <button onClick={() => setShowRegisterForm(true)} className="auth-button">Зарегистрироваться</button>
+                        </>
+                    )}
+                </div>
             </header>
             <div className="content">
                 <nav id="pageMenu">
@@ -84,6 +96,11 @@ function App() {
                     {!isLoggedIn && showLoginForm && (
                         <div className="login-container">
                             <LoginForm onLogin={handleLogin} />
+                        </div>
+                    )}
+                    {!isLoggedIn && showRegisterForm && (
+                        <div className="register-container">
+                            <RegisterForm onRegister={handleRegister} />
                         </div>
                     )}
                     {isLoggedIn && (

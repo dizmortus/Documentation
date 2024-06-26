@@ -40,7 +40,7 @@ fs.access(pagesDir, fs.constants.F_OK)
   });
 
 // POST: Создание новой страницы
-app.post('/api/pages',checkRole('admin'), async (req, res) => {
+app.post('/api/pages', checkRole('admin'), async (req, res) => {
   const { title, content } = req.body;
   if (!title || !content) return res.status(400).send('Title and content are required');
 
