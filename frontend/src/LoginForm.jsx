@@ -17,7 +17,7 @@ const LoginForm = ({ onLogin }) => {
             .catch(error => {
                 // Обработка ошибок
                 alert("Неверные данные!");
-                console.oerrr("Неверные данные!");
+                console.log("Неверные данные!");
             });
     };
 
