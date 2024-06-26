@@ -1,5 +1,6 @@
 const LocalStrategy = require('passport-local').Strategy;
 const User = require('../models/User');
+const jwt = require('jsonwebtoken');
 
 /**
  * Configures the passport middleware with the LocalStrategy and serialization/deserialization functions.
@@ -27,7 +28,8 @@ module.exports = function(passport) {
   ));
 
   passport.serializeUser(function(user, done) {
-    done(null, user.id);
+    const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET);
+    done(null, token);
   });
 
   passport.deserializeUser(async function(id, done) {

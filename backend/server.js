@@ -8,11 +8,11 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const fs = require('fs').promises;
 const path = require('path');
-
+const jwt = require('jsonwebtoken');
 require('dotenv').config(); // Загрузка переменных окружения
 
 const app = express(); // Экземпляр приложения
-
+app.use(cors()); // CORS для кросс-доменных запросов
 app.use(express.json()); // Middleware для JSON
 app.use(express.urlencoded({ extended: true })); 
 app.use(session({
@@ -23,13 +23,13 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 require('./config/passport')(passport);// Middleware для urlencoded данных
-app.use(cors()); // CORS для кросс-доменных запросов
+
 app.use(express.static(path.join(__dirname, '..', 'frontend', 'build'))); // Статические файлы React
 
 const pagesDir = path.join(__dirname, 'pages'); // Папка для страниц
 const sequelize = require('./config/database');
 const checkRole = require('./middleware/checkRole');
-const User = require('./models/User');
+
 sequelize.sync().then(() => {
   console.log("Database synchronized");
 });
@@ -38,9 +38,18 @@ fs.access(pagesDir, fs.constants.F_OK)
   .catch(() => {
     fs.mkdir(pagesDir, { recursive: true }).catch(err => console.error(err));
   });
-
+function isAuthenticated(req, res, next) {
+    const token = req.headers['authorization'];
+    if (!token) return res.status(401).send('Unauthorized');
+  
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+      if (err) return res.status(401).send('Unauthorized');
+      req.user = user;
+      next();
+    });
+  }
 // POST: Создание новой страницы
-app.post('/api/pages',checkRole('admin'), async (req, res) => {
+app.post('/api/pages',isAuthenticated,checkRole('admin'), async (req, res) => {
   const { title, content } = req.body;
   if (!title || !content) return res.status(400).send('Title and content are required');
 
@@ -71,7 +80,7 @@ app.post('/api/pages',checkRole('admin'), async (req, res) => {
 });
 
 // DELETE: Удаление страницы по ID
-app.delete('/api/pages/:id',checkRole('admin'), async (req, res) => {
+app.delete('/api/pages/:id',isAuthenticated,checkRole('admin'), async (req, res) => {
   const pageId = req.params.id;
   const pagePath = path.join(pagesDir, `${pageId}.html`);
 

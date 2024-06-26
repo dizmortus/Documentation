@@ -24,7 +24,7 @@ User.beforeCreate(async (user, options) => {
 });
 
 User.prototype.comparePassword = async function(candidatePassword) {
-  console.log(candidatePassword+"  "+this.password)
+  
   return bcrypt.compare(candidatePassword, this.password);
 };
 
