@@ -9,6 +9,7 @@ const cors = require('cors');
 const fs = require('fs').promises;
 const path = require('path');
 const jwt = require('jsonwebtoken');
+const verifyToken = require('./middleware/authJWT');
 require('dotenv').config(); // Загрузка переменных окружения
 
 const app = express(); // Экземпляр приложения
@@ -27,10 +28,10 @@ require('./config/passport')(passport);// Middleware для urlencoded данн�
 app.use(express.static(path.join(__dirname, '..', 'frontend', 'build'))); // Статические файлы React
 
 const pagesDir = path.join(__dirname, 'pages'); // Папка для страниц
-const sequelize = require('./config/database');
+const db = require('./config/database');
 const checkRole = require('./middleware/checkRole');
 
-sequelize.sync().then(() => {
+db.sequelize.sync().then(() => {
   console.log("Database synchronized");
 });
 // Проверка существования папки или её создание
@@ -38,25 +39,25 @@ fs.access(pagesDir, fs.constants.F_OK)
   .catch(() => {
     fs.mkdir(pagesDir, { recursive: true }).catch(err => console.error(err));
   });
-  function isAuthenticated(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    if (!authHeader) return res.status(401).send('Unauthorized');
+function isAuthenticated(req, res, next) {
+  const authHeader = req.headers["x-access-token"];
+  if (!authHeader) return res.status(401).send('Unauthorized');
 
-    const token = authHeader.split(' ')[1];
-    if (!token) return res.status(401).send('Unauthorized');
-    
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-      if (err) {
-        console.error(err);
-        return res.status(401).send('Unauthorized');
-      }
-      req.user = user;
-      next();
-    });
+  const token = authHeader.split(' ')[1];
+  if (!token) return res.status(401).send('Unauthorized');
+  
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      console.error(err);
+      return res.status(401).send('Unauthorized');
+    }
+    req.user = user;
+    next();
+  });
 }
 
 // POST: Создание новой страницы
-app.post('/api/pages',isAuthenticated,checkRole('admin'), async (req, res) => {
+app.post('/api/pages',verifyToken,checkRole('admin'), async (req, res) => {
   const { title, content } = req.body;
   if (!title || !content) return res.status(400).send('Title and content are required');
 
@@ -87,7 +88,7 @@ app.post('/api/pages',isAuthenticated,checkRole('admin'), async (req, res) => {
 });
 
 // DELETE: Удаление страницы по ID
-app.delete('/api/pages/:id',isAuthenticated,checkRole('admin'), async (req, res) => {
+app.delete('/api/pages/:id',verifyToken,checkRole('admin'), async (req, res) => {
   const pageId = req.params.id;
   const pagePath = path.join(pagesDir, `${pageId}.html`);
 

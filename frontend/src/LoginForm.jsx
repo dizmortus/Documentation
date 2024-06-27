@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import api from './services/api'
+import TokenService from "./services/TokenService";
 
 
 const LoginForm = ({ onLogin }) => {
@@ -7,17 +9,19 @@ const LoginForm = ({ onLogin }) => {
     const [password, setPassword] = useState('');
 
     const handleLogin = () => {
-        axios.post('/api/auth/login', { username, password })
+        api.post('/api/auth/login', { username, password })
             .then(response => {
-
-                const { token ,user} = response.data;
-                localStorage.setItem('jwtToken', token);
+                const {token,user} = response.data;
+                if(user.accessToken){
+                    TokenService.setUser(user);
+                }
                 
                 onLogin(user);
 
                 alert("Вы успешно зашли как " + username);
             })
             .catch(error => {
+                console.log(error)
                 alert("Неверные данные!");
                 console.log("Неверные данные!");
             });

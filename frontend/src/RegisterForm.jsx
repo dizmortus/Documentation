@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import axios from 'axios';
+import api from './services/api'
 
 const RegisterForm = ({ onRegister }) => {
     const [username, setUsername] = useState('');
@@ -10,7 +11,7 @@ const RegisterForm = ({ onRegister }) => {
 
     const handleRegister = (e) => {
         e.preventDefault();
-        axios.post('/api/auth/register', { username, password })
+        api.post('/api/auth/register', { username, password })
             .then(response => {
                 onRegister(response.data); // обработка успешной регистрации
             })

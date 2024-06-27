@@ -6,6 +6,7 @@ import axios from 'axios';
 import NewPage from './NewPages.jsx';
 import LoginForm from './LoginForm.jsx';
 import RegisterForm from './RegisterForm.jsx';
+import api from './services/api'
 
 
 function App() {
@@ -29,16 +30,13 @@ function App() {
     };
 
     const handleLogout = () => {
+        localStorage.removeItem("user");
         dispatch({ type: 'LOGOUT_USER' });
     };
 
     useEffect(() => {
-        const token = localStorage.getItem('jwtToken');
-        axios.get('/api/pages', {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+       
+        api.get('/api/pages')
         .then(response => {
             dispatch({ type: 'SET_PAGES', payload: response.data });
         })
@@ -48,15 +46,10 @@ function App() {
     }, [dispatch]);
     
     const addPage = () => {
-        const token = localStorage.getItem('jwtToken');
+       
         if (title && content) {
             const newPage = { title, content };
-            axios.post('/api/pages', newPage, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                }
-            })
+            api.post('/api/pages', newPage)
             .then(response => {
                 dispatch({ type: 'ADD_PAGE', payload: response.data });
                 setTitle('');
@@ -69,12 +62,8 @@ function App() {
     };
     
     const removePage = (pageId) => {
-        const token = localStorage.getItem('jwtToken');
-        axios.delete(`/api/pages/${pageId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        
+        api.delete(`/api/pages/${pageId}`)
         .then(() => {
             dispatch({ type: 'REMOVE_PAGE', payload: pageId });
         })

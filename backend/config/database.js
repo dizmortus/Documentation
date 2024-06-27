@@ -6,9 +6,21 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
   dialect: 'postgres',
   port: process.env.DB_PORT,
 });
+const db={};
+db.Sequelize = Sequelize;
+db.sequelize = sequelize;
 
+db.user = require("../models/User.js")(sequelize, Sequelize);
+
+db.refreshToken = require("../models/refreshToken.js")(sequelize, Sequelize);
+db.refreshToken.belongsTo(db.user, {
+  foreignKey: 'userId', targetKey: 'id'
+});
+db.user.hasOne(db.refreshToken, {
+  foreignKey: 'userId', targetKey: 'id'
+});
 sequelize.authenticate()
   .then(() => console.log('Database connected...'))
   .catch(err => console.log('Error: ' + err));
 
-module.exports = sequelize;
+module.exports = db;
