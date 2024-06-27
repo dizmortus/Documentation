@@ -145,7 +145,7 @@ app.get('/api/pages', async (req, res) => {
 });
 
 app.use('/api/auth', require('./routes/auth'));
-
+app.use('/api', require('./routes/comments'));
 app.get('/profile', isAuthenticated, (req, res) => {
   res.send(`<h1>Profile of ${req.user.username}</h1><p>Role: ${req.user.role}</p><a href="/logout">Logout</a>`);
 });

@@ -6,8 +6,8 @@ import axios from 'axios';
 import NewPage from './NewPages.jsx';
 import LoginForm from './LoginForm.jsx';
 import RegisterForm from './RegisterForm.jsx';
+import Comments from './Comments.jsx';
 import './styles.css';
-
 
 function App() {
     const [title, setTitle] = useState('');
@@ -40,14 +40,14 @@ function App() {
                 Authorization: `Bearer ${token}`
             }
         })
-        .then(response => {
-            dispatch({ type: 'SET_PAGES', payload: response.data });
-        })
-        .catch(error => {
-            console.error(error);
-        });
+            .then(response => {
+                dispatch({ type: 'SET_PAGES', payload: response.data });
+            })
+            .catch(error => {
+                console.error(error);
+            });
     }, [dispatch]);
-    
+
     const addPage = () => {
         const token = localStorage.getItem('jwtToken');
         if (title && content) {
@@ -58,17 +58,17 @@ function App() {
                     Authorization: `Bearer ${token}`
                 }
             })
-            .then(response => {
-                dispatch({ type: 'ADD_PAGE', payload: response.data });
-                setTitle('');
-                setContent('');
-            })
-            .catch(error => {
-                console.error(error);
-            });
+                .then(response => {
+                    dispatch({ type: 'ADD_PAGE', payload: response.data });
+                    setTitle('');
+                    setContent('');
+                })
+                .catch(error => {
+                    console.error(error);
+                });
         }
     };
-    
+
     const removePage = (pageId) => {
         const token = localStorage.getItem('jwtToken');
         axios.delete(`/api/pages/${pageId}`, {
@@ -76,14 +76,14 @@ function App() {
                 Authorization: `Bearer ${token}`
             }
         })
-        .then(() => {
-            dispatch({ type: 'REMOVE_PAGE', payload: pageId });
-        })
-        .catch(error => {
-            console.error(error);
-        });
+            .then(() => {
+                dispatch({ type: 'REMOVE_PAGE', payload: pageId });
+            })
+            .catch(error => {
+                console.error(error);
+            });
     };
-    
+
     const isLoggedIn = !!user;
     const isAdmin = user?.role === 'admin';
     const isUser = user?.role === 'user';
@@ -140,12 +140,10 @@ function App() {
                             <button onClick={addPage}>Добавить</button>
                         </div>
                     )}
-                    {isLoggedIn && (3 || isUser) && (
-                        <div className="comment-section">
-                            {/* Курилл добавь комменты сюда */}
-                        </div>
-                    )}
                 </main>
+                <div className="comment-section">
+                    <Comments pageId={0} />
+                </div>
             </div>
             <footer>
                 <a>Сделали студенты из БНТУ</a>

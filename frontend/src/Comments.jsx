@@ -40,7 +40,7 @@ const Comments = ({ pageId }) => {
                     <small>От: {comment.userId}</small>
                 </div>
             ))}
-            {user && (
+            {user ? (
                 <div className="add-comment">
                     <textarea
                         value={newComment}
@@ -49,6 +49,8 @@ const Comments = ({ pageId }) => {
                     />
                     <button onClick={handleAddComment}>Добавить</button>
                 </div>
+            ) : (
+                <p>Вы должны войти, чтобы оставить комментарий.</p>
             )}
         </div>
     );
