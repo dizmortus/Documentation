@@ -20,21 +20,39 @@ function App() {
     const [showRegisterForm, setShowRegisterForm] = useState(false);
 
     const handleLogin = (userData) => {
+        localStorage.setItem('jwtToken', userData.token);
         dispatch({ type: 'SET_USER', payload: userData });
         setShowLoginForm(false);
     };
 
     const handleRegister = (userData) => {
+        localStorage.setItem('jwtToken', userData.token);
         dispatch({ type: 'SET_USER', payload: userData });
         setShowRegisterForm(false);
     };
 
     const handleLogout = () => {
+        localStorage.removeItem('jwtToken');
         dispatch({ type: 'LOGOUT_USER' });
     };
 
     useEffect(() => {
         const token = localStorage.getItem('jwtToken');
+        if (token) {
+            axios.get('/api/auth/user', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+                .then(response => {
+                    dispatch({ type: 'SET_USER', payload: response.data });
+                })
+                .catch(error => {
+                    console.error(error);
+                    localStorage.removeItem('jwtToken');
+                });
+        }
+
         axios.get('/api/pages', {
             headers: {
                 Authorization: `Bearer ${token}`
