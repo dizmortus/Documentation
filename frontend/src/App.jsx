@@ -7,7 +7,8 @@ import NewPage from './NewPages.jsx';
 import LoginForm from './LoginForm.jsx';
 import RegisterForm from './RegisterForm.jsx';
 import api from './services/api'
-
+import Comments from './Comments.jsx';
+import './styles.css';
 
 function App() {
     const [title, setTitle] = useState('');
@@ -20,11 +21,13 @@ function App() {
     const [showRegisterForm, setShowRegisterForm] = useState(false);
 
     const handleLogin = (userData) => {
+        localStorage.setItem('jwtToken', userData.token);
         dispatch({ type: 'SET_USER', payload: userData });
         setShowLoginForm(false);
     };
 
     const handleRegister = (userData) => {
+        localStorage.setItem('jwtToken', userData.token);
         dispatch({ type: 'SET_USER', payload: userData });
         setShowRegisterForm(false);
     };
@@ -44,7 +47,7 @@ function App() {
             console.error(error);
         });
     }, [dispatch]);
-    
+
     const addPage = () => {
        
         if (title && content) {
@@ -60,7 +63,7 @@ function App() {
             });
         }
     };
-    
+
     const removePage = (pageId) => {
         
         api.delete(`/api/pages/${pageId}`)
@@ -71,7 +74,7 @@ function App() {
             console.error(error);
         });
     };
-    
+
     const isLoggedIn = !!user;
     const isAdmin = user?.role === 'admin';
     const isUser = user?.role === 'user';
@@ -128,12 +131,10 @@ function App() {
                             <button onClick={addPage}>Добавить</button>
                         </div>
                     )}
-                    {isLoggedIn && (isAdmin || isUser) && (
-                        <div className="comment-section">
-                            {/* Курилл добавь комменты сюда */}
-                        </div>
-                    )}
                 </main>
+                <div className="comment-section">
+                    <Comments pageId={0} />
+                </div>
             </div>
             <footer>
                 <a>Сделали студенты из БНТУ</a>
