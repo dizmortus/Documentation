@@ -8,7 +8,7 @@ const Comments = ({ pageId }) => {
     const user = useSelector(state => state.user.user);
 
     useEffect(() => {
-        axios.get(`/api/pages/${pageId}/comments`)
+        axios.get(`/api/comments/${pageId}`)
             .then(response => {
                 setComments(response.data);
             })
@@ -20,7 +20,7 @@ const Comments = ({ pageId }) => {
     const handleAddComment = () => {
         if (newComment) {
             const commentData = { userId: user.id, pageId, comment: newComment };
-            axios.post('/api/comments', commentData)
+            axios.post('/api/comments/', commentData)
                 .then(response => {
                     setComments([...comments, response.data]);
                     setNewComment('');

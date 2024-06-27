@@ -4,7 +4,7 @@ const { checkRole } = require('../middleware/checkRole');
 const Comment = require('../models/Comment');
 
 // Добавление нового комментария
-router.post('/comments', async (req, res) => {
+router.post('/', async (req, res) => {
     const { userId, pageId, comment } = req.body;
     try {
         const newComment = await Comment.create({ userId, pageId, comment });
@@ -16,7 +16,7 @@ router.post('/comments', async (req, res) => {
 });
 
 // Получение комментариев для страницы
-router.get('/pages/:pageId/comments', async (req, res) => {
+router.get('/:pageId', async (req, res) => {
     const { pageId } = req.params;
     try {
         const comments = await Comment.findAll({ where: { pageId } });
