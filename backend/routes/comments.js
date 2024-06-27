@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const { checkRole } = require('../middleware/checkRole');
-const Comment = require('../models/Comment');
+const db =require('../config/database')
+const Comment = db.comment
+
 
 // Добавление нового комментария
 router.post('/', async (req, res) => {

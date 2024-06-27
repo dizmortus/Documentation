@@ -13,6 +13,8 @@ db.sequelize = sequelize;
 db.user = require("../models/User.js")(sequelize, Sequelize);
 
 db.refreshToken = require("../models/refreshToken.js")(sequelize, Sequelize);
+db.comment=require("../models/Comment.js")(sequelize, Sequelize);
+db.page=require("../models/Page.js")(sequelize, Sequelize);
 db.refreshToken.belongsTo(db.user, {
   foreignKey: 'userId', targetKey: 'id'
 });

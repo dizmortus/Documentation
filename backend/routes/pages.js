@@ -2,13 +2,16 @@ const express = require('express');
 const fs = require('fs').promises;
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
-const Page = require('../models/Page');
+const db =require('../config/database')
+const Page = db.page
+const verifyToken = require('../middleware/authJWT');
+const checkRole = require('../middleware/checkRole');
 
 const router = express.Router();
 const pagesDir = path.join(__dirname, '..', 'pages');
 
 // POST: Создание новой страницы
-router.post('/', async (req, res) => {
+router.post('/',verifyToken,checkRole('admin'), async (req, res) => {
     const { title, content } = req.body;
     if (!title || !content) return res.status(400).send('Title and content are required');
 
@@ -44,7 +47,7 @@ router.post('/', async (req, res) => {
 });
 
 // DELETE: Удаление страницы по ID
-router.delete('/:id', async (req, res) => {
+router.delete('/:id',verifyToken,checkRole('admin'), async (req, res) => {
     const pageId = req.params.id;
     const pagePath = path.join(pagesDir, `${pageId}.html`);
 

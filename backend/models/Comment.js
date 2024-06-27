@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
+module.exports=(sequelize, Sequelize) => { 
 const Comment = sequelize.define('Comment', {
     userId: {
         type: DataTypes.INTEGER,
@@ -23,5 +24,5 @@ const Comment = sequelize.define('Comment', {
         defaultValue: DataTypes.NOW
     }
 });
-
-module.exports = Comment;
+return Comment;
+}
