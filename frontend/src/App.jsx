@@ -7,6 +7,7 @@ import NewPage from './NewPages.jsx';
 import LoginForm from './LoginForm.jsx';
 import RegisterForm from './RegisterForm.jsx';
 import api from './services/api'
+import TokenService from './services/TokenService.js'
 import Comments from './Comments.jsx';
 import './styles.css';
 
@@ -21,19 +22,18 @@ function App() {
     const [showRegisterForm, setShowRegisterForm] = useState(false);
 
     const handleLogin = (userData) => {
-        localStorage.setItem('jwtToken', userData.token);
         dispatch({ type: 'SET_USER', payload: userData });
         setShowLoginForm(false);
     };
 
     const handleRegister = (userData) => {
-        localStorage.setItem('jwtToken', userData.token);
+        TokenService.removeUser();
         dispatch({ type: 'SET_USER', payload: userData });
         setShowRegisterForm(false);
     };
 
     const handleLogout = () => {
-        localStorage.removeItem("user");
+        TokenService.removeUser();
         dispatch({ type: 'LOGOUT_USER' });
     };
 
@@ -58,7 +58,7 @@ function App() {
                 setTitle('');
                 setContent('');
             })
-            .catch(error => {
+            .catch(error => {2
                 console.error(error);
             });
         }
