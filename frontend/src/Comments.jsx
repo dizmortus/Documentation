@@ -6,6 +6,7 @@ const Comments = ({ pageId }) => {
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
     const user = useSelector(state => state.user.user);
+    const isAdmin = user?.role === 'admin';
 
     useEffect(() => {
         axios.get(`/api/comments/${pageId}`)
@@ -32,6 +33,17 @@ const Comments = ({ pageId }) => {
         }
     };
 
+    const handleDeleteComment = (commentId) => {
+        axios.delete(`/api/comments/${commentId}`) // Отправляем DELETE запрос для удаления комментария
+            .then(() => {
+                // Фильтруем удаленный комментарий из списка
+                setComments(prevComments => prevComments.filter(comment => comment.id !== commentId));
+            })
+            .catch(error => {
+                console.error('Ошибка при удалении комментария:', error);
+            });
+    };
+
     return (
         <div className="comments">
             <h3>Комментарии</h3>
@@ -39,6 +51,11 @@ const Comments = ({ pageId }) => {
                 <div key={comment.id} className="comment">
                     <p>{comment.comment}</p>
                     <small>От: {comment.user.username}</small>
+                    {isAdmin && (
+                        <button onClick={() => handleDeleteComment(comment.id)} className="delete-button">
+                            Удалить
+                        </button>
+                    )}
                 </div>
             ))}
             {user ? (
