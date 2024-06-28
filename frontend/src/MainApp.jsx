@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-//import NewPage from './NewPages.jsx';
 import LoginForm from './LoginForm.jsx';
 import RegisterForm from './RegisterForm.jsx';
 import TokenService from './services/TokenService.js';
@@ -51,8 +50,8 @@ function MainApp() {
         if (title && content) {
             const newPage = { id: pages.length + 1, title, content };
             const updatedPages = [...pages, newPage];
-            localStorage.setItem('pages', JSON.stringify(updatedPages));
-            dispatch({ type: 'ADD_PAGE', payload: newPage });
+            localStorage.setItem('pages', JSON.stringify(updatedPages)); // Обновляем localStorage
+            dispatch({ type: 'ADD_PAGE', payload: newPage }); // Обновляем Redux store
             setTitle('');
             setContent('');
         }
@@ -60,8 +59,8 @@ function MainApp() {
 
     const removePage = (pageId) => {
         const updatedPages = pages.filter(page => page.id !== pageId);
-        localStorage.setItem('pages', JSON.stringify(updatedPages));
-        dispatch({ type: 'REMOVE_PAGE', payload: pageId });
+        localStorage.setItem('pages', JSON.stringify(updatedPages)); // Обновляем localStorage
+        dispatch({ type: 'REMOVE_PAGE', payload: pageId }); // Обновляем Redux store
     };
 
     const isLoggedIn = !!user;
@@ -94,12 +93,12 @@ function MainApp() {
                 </div>
             </header>
             <div className="content">
-            <nav id="pageMenu">
+                <nav id="pageMenu">
                     {pages.map(page => (
-                        <div key={page.id} className="page-item">
+                        <div key={page.id} className="page-link">
                             <Link to={`/page/${page.id}`}>{page.title}</Link>
-                            {isLoggedIn && isAdmin && (
-                                <button onClick={() => removePage(page.id)} className="delete-button">Удалить</button>
+                            {isAdmin && (
+                                <button onClick={() => removePage(page.id)} className="remove-button">Удалить</button>
                             )}
                         </div>
                     ))}

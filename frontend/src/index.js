@@ -1,15 +1,17 @@
-//Файл Documentation/frontend/index.js
-//Файл запуска React приложения
-import './styles.css';
+// Documentation/frontend/index.js
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 import App from './App.jsx';
-import store from './store/store.js';
+import { store, persistor } from './store/store';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
+ReactDOM.render(
     <Provider store={store}>
-        <App />
-    </Provider>
+        <PersistGate loading={null} persistor={persistor}>
+            <App />
+        </PersistGate>
+    </Provider>,
+    document.getElementById('root')
 );

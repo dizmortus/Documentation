@@ -6,22 +6,24 @@ set FRONTEND_DIR=frontend
 
 :menu
 echo.
-echo 1. Start server
+echo 1. Install dependencies and start server
 echo 2. Stop server
-echo 3. Build frontend
+echo 3. Install dependencies and build frontend
 echo 4. Exit
 echo.
 set /p choice="Choose an option: "
 
-if "%choice%"=="1" goto start_server
+if "%choice%"=="1" goto install_and_start_server
 if "%choice%"=="2" goto stop_server
-if "%choice%"=="3" goto build_frontend
+if "%choice%"=="3" goto install_and_build_frontend
 if "%choice%"=="4" goto end
 goto menu
 
-:start_server
-echo Starting server on port %SERVER_PORT%...
+:install_and_start_server
+echo Installing server dependencies...
 cd %SERVER_DIR%
+call npm install
+echo Starting server on port %SERVER_PORT%...
 start /b node server.js
 timeout /t 3 >nul
 cd..
@@ -34,9 +36,11 @@ for /f "tokens=5" %%a in ('netstat -aon ^| findstr "LISTENING" ^| findstr ":%SER
 )
 goto menu
 
-:build_frontend
-echo Building frontend...
+:install_and_build_frontend
+echo Installing frontend dependencies...
 cd %FRONTEND_DIR%
+call npm install
+echo Building frontend...
 call npm run build
 pause
 cd..

@@ -1,4 +1,4 @@
-//Файл Documentation/frontend/store/pagesReducer.js
+// Файл Documentation/frontend/store/pagesReducer.js
 
 const initialState = {
     pages: [],

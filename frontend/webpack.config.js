@@ -4,8 +4,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
   entry: './src/index.js', // Точка входа приложения
   output: {
-    path: path.resolve(__dirname, 'build'), // Папка для собранных файлов
-    filename: 'bundle.js' // Имя собранного файла
+    publicPath: '/', // Указать корень сайта как публичный путь
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'build')
   },
   module: {
     rules: [
