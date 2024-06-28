@@ -22,13 +22,17 @@ router.post("/register", async (req, res) => {
   }
 });
 
+
 router.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
+
+
     if (err) return next(err);
     if (!user) return res.status(401).json({ error: info.message });
 
     req.login(user, async (err) => {
       if (err) return next(err);
+
 
       const token = jwt.sign(
         { id: user.id, role: user.role },
@@ -38,6 +42,7 @@ router.post("/login", (req, res, next) => {
         }
       );
       let refreshToken = await RefreshToken.createToken(user);
+
 
       return res.json({
         user: {

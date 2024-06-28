@@ -13,6 +13,7 @@ const RegisterForm = ({ onRegister }) => {
         e.preventDefault();
         api.post('/api/auth/register', { username, password })
             .then(response => {
+                alert("Регистрация прошла успешно!")
                 onRegister(response.data); // обработка успешной регистрации
             })
             .catch(error => {
@@ -25,18 +26,18 @@ const RegisterForm = ({ onRegister }) => {
             <h2>Регистрация</h2>
             {error && <p style={{ color: 'red' }}>{error}</p>}
             <div>
-                <label>Логин</label>
                 <input
                     type="text"
+                    placeholder="Логин"
                     value={username}
                     onChange={e => setUsername(e.target.value)}
                     required
                 />
             </div>
             <div>
-                <label>Пароль</label>
                 <input
                     type="password"
+                    placeholder="Пароль"
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                     required

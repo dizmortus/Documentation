@@ -74,7 +74,7 @@ main {
 
 .comment-section {
   width: 100%;
-  max-width: 800px;
+  max-width: 400px;
   margin-top: 20px;
   padding: 10px;
   background-color: #f0f0f0;
@@ -121,29 +121,36 @@ footer a {
   text-align: center;
 }
 
-.register-container {
+.register-container, .login-container {
   margin: 20px auto;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  width: 300px;
+  width: 300px; /* Увеличена ширина для более удобного размещения полей */
 }
 
-.register-container form {
+.register-container h2, .login-container h2 {
+  text-align: center; /* Выравнивание заголовка по центру */
+}
+
+.register-container form, .login-container form {
   display: flex;
   flex-direction: column;
 }
 
-.register-container label {
+.register-container label, .login-container label {
   margin-bottom: 5px;
 }
 
-.register-container input {
+.register-container input, .login-container input {
+  width: 100%; /* Растянуть input на всю ширину контейнера */
   margin-bottom: 10px;
   padding: 5px;
+  box-sizing: border-box; /* Учитывать padding в ширине элемента */
 }
 
-.register-container button {
+.register-container button, .login-container button {
+  align-self: center;
   padding: 10px;
   background-color: #007bff;
   color: #fff;
@@ -152,6 +159,6 @@ footer a {
   cursor: pointer;
 }
 
-.register-container button:hover {
+.register-container button:hover, .login-container button:hover {
   background-color: #0056b3;
 }

@@ -1,49 +1,55 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import api from './services/api'
+import api from './services/api';
 import TokenService from "./services/TokenService";
-
 
 const LoginForm = ({ onLogin }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
 
-    const handleLogin = () => {
+    const handleLogin = (event) => {
+        event.preventDefault(); // предотвращает перезагрузку страницы
         api.post('/api/auth/login', { username, password })
             .then(response => {
-                const {token,user} = response.data;
-                if(user.accessToken){
+                const { token, user } = response.data;
+                if (user && user.accessToken) {
                     TokenService.setUser(user);
+                    alert("Вы вошли как " + username + ".");
+                    onLogin(user);
+                } else {
+                    setError("Неверные данные!");
                 }
-                
-                onLogin(user);
-
-                alert("Вы успешно зашли как " + username);
             })
             .catch(error => {
-                console.log(error)
-                alert("Неверные данные!");
-                console.log("Неверные данные!");
+                console.log(error);
+                setError("Неверные данные!");
             });
     };
-    
 
     return (
-        <div className="login-form">
-            <input
-                type="text"
-                placeholder="Логин"
-                value={username}
-                onChange={e => setUsername(e.target.value)}
-            /><br />
-            <input
-                type="password"
-                placeholder="Пароль"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-            /><br />
-            <button onClick={handleLogin}>Войти</button>
-        </div>
+        <form onSubmit={handleLogin}>
+            <h2>Вход</h2>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+            <div>
+                <input
+                    type="text"
+                    placeholder="Логин"
+                    value={username}
+                    onChange={e => setUsername(e.target.value)}
+                    required
+                />
+            </div>
+            <div>
+                <input
+                    type="password"
+                    placeholder="Пароль"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    required
+                />
+            </div>
+            <button type="submit">Войти</button>
+        </form>
     );
 };
 
