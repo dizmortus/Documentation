@@ -24,6 +24,7 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
+    
     if (err) return next(err);
     if (!user) return res.status(401).json({ error: info.message });
     
@@ -34,7 +35,8 @@ router.post('/login', (req, res, next) => {
         expiresIn: +process.env.JWT_EXPIRATION
       });
       let refreshToken =await RefreshToken.createToken(user);
-      
+      console.log(refreshToken);
+      console.log(token);
       return res.json({
         user: {
           id: user.id,

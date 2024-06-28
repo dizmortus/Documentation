@@ -78,6 +78,15 @@ function App() {
     const isLoggedIn = !!user;
     const isAdmin = user?.role === 'admin';
     const isUser = user?.role === 'user';
+    const handleShowLogin = () => {
+        setShowLoginForm(true);
+        setShowRegisterForm(false);
+    }
+
+    const handleShowRegister = () => {
+        setShowLoginForm(false);
+        setShowRegisterForm(true);
+    }
 
     return (
         <div className="app">
@@ -89,8 +98,8 @@ function App() {
                         <button onClick={handleLogout} className="auth-button">Выйти</button>
                     ) : (
                         <>
-                            <button onClick={() => setShowLoginForm(true)} className="auth-button">Войти</button>
-                            <button onClick={() => setShowRegisterForm(true)} className="auth-button">Зарегистрироваться</button>
+                            <button onClick={handleShowLogin} className="auth-button">Войти</button>
+                            <button onClick={handleShowRegister} className="auth-button">Зарегистрироваться</button>
                         </>
                     )}
                 </div>
