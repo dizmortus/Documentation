@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import NewPage from './NewPages.jsx';
+//import NewPage from './NewPages.jsx';
 import LoginForm from './LoginForm.jsx';
 import RegisterForm from './RegisterForm.jsx';
 import TokenService from './services/TokenService.js';
@@ -94,9 +94,14 @@ function MainApp() {
                 </div>
             </header>
             <div className="content">
-                <nav id="pageMenu">
+            <nav id="pageMenu">
                     {pages.map(page => (
-                        <Link key={page.id} to={`/page/${page.id}`}>{page.title}</Link>
+                        <div key={page.id} className="page-item">
+                            <Link to={`/page/${page.id}`}>{page.title}</Link>
+                            {isLoggedIn && isAdmin && (
+                                <button onClick={() => removePage(page.id)} className="delete-button">Удалить</button>
+                            )}
+                        </div>
                     ))}
                 </nav>
                 <main>
