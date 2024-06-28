@@ -1,11 +1,10 @@
 const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
-const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
 
-const fs = require("fs");
+
 require('dotenv').config(); // Загрузка переменных окружения
 
 const app = express(); // Экземпляр приложения
@@ -25,7 +24,6 @@ require('./config/passport')(passport); // Middleware для urlencoded данн
 
 app.use(express.static(path.join(__dirname, '..', 'frontend', 'build'))); // Статические файлы React
 
-const pagesDir = path.join(__dirname, 'pages'); // Папка для страниц
 const db = require('./config/database');
 
 

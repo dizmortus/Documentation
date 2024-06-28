@@ -22,12 +22,13 @@ function App() {
     const [showRegisterForm, setShowRegisterForm] = useState(false);
 
     const handleLogin = (userData) => {
+        TokenService.setUser(userData);
         dispatch({ type: 'SET_USER', payload: userData });
         setShowLoginForm(false);
     };
 
     const handleRegister = (userData) => {
-        TokenService.removeUser();
+        TokenService.setUser(userData);
         dispatch({ type: 'SET_USER', payload: userData });
         setShowRegisterForm(false);
     };
@@ -38,7 +39,11 @@ function App() {
     };
 
     useEffect(() => {
-       
+        const storedUser = TokenService.getUser();
+        if (storedUser) {
+            dispatch({ type: 'SET_USER', payload: storedUser });
+        }
+        
         api.get('/api/pages')
         .then(response => {
             dispatch({ type: 'SET_PAGES', payload: response.data });
@@ -58,7 +63,7 @@ function App() {
                 setTitle('');
                 setContent('');
             })
-            .catch(error => {2
+            .catch(error => {
                 console.error(error);
             });
         }

@@ -20,9 +20,10 @@ const Comments = ({ pageId }) => {
     const handleAddComment = () => {
         if (newComment) {
             const commentData = { userId: user.id, pageId, comment: newComment };
-            axios.post('/api/comments/', commentData)
+            axios.post('/api/comments', commentData)
                 .then(response => {
-                    setComments([...comments, response.data]);
+                    // Update comments state with the new comment
+                    setComments(prevComments => [...prevComments, response.data]);
                     setNewComment('');
                 })
                 .catch(error => {
@@ -37,7 +38,7 @@ const Comments = ({ pageId }) => {
             {comments.map(comment => (
                 <div key={comment.id} className="comment">
                     <p>{comment.comment}</p>
-                    <small>От: {comment.userId}</small>
+                    <small>От: {comment.user.username}</small>
                 </div>
             ))}
             {user ? (

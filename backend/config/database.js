@@ -21,6 +21,12 @@ db.refreshToken.belongsTo(db.user, {
 db.user.hasOne(db.refreshToken, {
   foreignKey: 'userId', targetKey: 'id'
 });
+
+Object.keys(db).forEach((modelName) => {
+  if (db[modelName].associate) {
+    db[modelName].associate(db);
+  }
+});
 sequelize.authenticate()
   .then(() => console.log('Database connected...'))
   .catch(err => console.log('Error: ' + err));
