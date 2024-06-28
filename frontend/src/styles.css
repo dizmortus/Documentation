@@ -71,6 +71,12 @@ main {
   max-width: 500px;
   margin-bottom: 10px;
 }
+.ck-editor__editable_inline {
+  height: 300px; /* Установите желаемую высоту */
+  max-height: 300px; /* Установите максимальную высоту */
+  overflow: auto; /* Добавьте прокрутку при переполнении */
+  white-space: pre-wrap; /* Чтобы текст переносился на новую строку */
+}
 
 .comment-section {
   width: 100%;
