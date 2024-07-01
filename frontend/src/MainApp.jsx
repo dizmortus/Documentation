@@ -49,18 +49,14 @@ function MainApp() {
     const addPage = () => {
         if (title && content) {
             const newPage = { id: pages.length + 1, title, content };
-            const updatedPages = [...pages, newPage];
-            localStorage.setItem('pages', JSON.stringify(updatedPages)); // Обновляем localStorage
-            dispatch({ type: 'ADD_PAGE', payload: newPage }); // Обновляем Redux store
+            dispatch({ type: 'ADD_PAGE', payload: newPage });
             setTitle('');
             setContent('');
         }
     };
 
     const removePage = (pageId) => {
-        const updatedPages = pages.filter(page => page.id !== pageId);
-        localStorage.setItem('pages', JSON.stringify(updatedPages)); // Обновляем localStorage
-        dispatch({ type: 'REMOVE_PAGE', payload: pageId }); // Обновляем Redux store
+        dispatch({ type: 'REMOVE_PAGE', payload: pageId });
     };
 
     const isLoggedIn = !!user;
