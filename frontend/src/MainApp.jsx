@@ -12,6 +12,7 @@ import './styles.css';
 function MainApp() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
+    const [editingPageId, setEditingPageId] = useState(null);
     const pages = useSelector(state => state.pages.pages);
     const pageCount = useSelector(state => state.pages.pageCount);
     const user = useSelector(state => state.user.user);
@@ -49,18 +50,32 @@ function MainApp() {
     const addPage = () => {
         if (title && content) {
             const newPage = { id: pages.length + 1, title, content };
-            const updatedPages = [...pages, newPage];
-            localStorage.setItem('pages', JSON.stringify(updatedPages)); // Обновляем localStorage
-            dispatch({ type: 'ADD_PAGE', payload: newPage }); // Обновляем Redux store
+            dispatch({ type: 'ADD_PAGE', payload: newPage });
             setTitle('');
             setContent('');
+            setEditingPageId(null);
         }
     };
 
+    const savePage = () => {
+        if (editingPageId !== null && title && content) {
+            const updatedPage = { id: editingPageId, title, content };
+            dispatch({ type: 'UPDATE_PAGE', payload: updatedPage });
+            setTitle('');
+            setContent('');
+            setEditingPageId(null);
+        }
+    };
+
+    const editPage = (pageId) => {
+        const page = pages.find(p => p.id === pageId);
+        setTitle(page.title);
+        setContent(page.content);
+        setEditingPageId(pageId);
+    };
+
     const removePage = (pageId) => {
-        const updatedPages = pages.filter(page => page.id !== pageId);
-        localStorage.setItem('pages', JSON.stringify(updatedPages)); // Обновляем localStorage
-        dispatch({ type: 'REMOVE_PAGE', payload: pageId }); // Обновляем Redux store
+        dispatch({ type: 'REMOVE_PAGE', payload: pageId });
     };
 
     const isLoggedIn = !!user;
@@ -98,7 +113,10 @@ function MainApp() {
                         <div key={page.id} className="page-link">
                             <Link to={`/page/${page.id}`}>{page.title}</Link>
                             {isAdmin && (
-                                <button onClick={() => removePage(page.id)} className="remove-button">Удалить</button>
+                                <>
+                                    <button onClick={() => editPage(page.id)} className="edit-button">Редактировать</button>
+                                    <button onClick={() => removePage(page.id)} className="remove-button">Удалить</button>
+                                </>
                             )}
                         </div>
                     ))}
@@ -130,7 +148,11 @@ function MainApp() {
                                     setContent(data);
                                 }}
                             /><br />
-                            <button onClick={addPage}>Добавить</button>
+                            {editingPageId !== null ? (
+                                <button onClick={savePage}>Сохранить</button>
+                            ) : (
+                                <button onClick={addPage}>Добавить</button>
+                            )}
                         </div>
                     )}
                 </main>

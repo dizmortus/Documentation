@@ -1,47 +1,34 @@
+// Documentation/frontend/components/Comments.jsx
+
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Comments = ({ pageId }) => {
-    const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
+    const comments = useSelector(state => state.comments.comments.filter(comment => comment.pageId === pageId));
     const user = useSelector(state => state.user.user);
     const isAdmin = user?.role === 'admin';
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        axios.get(`/api/comments/${pageId}`)
-            .then(response => {
-                setComments(response.data);
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }, [pageId]);
+        const storedComments = JSON.parse(localStorage.getItem('comments')) || [];
+        dispatch({ type: 'SET_COMMENTS', payload: storedComments });
+    }, [dispatch]);
 
     const handleAddComment = () => {
         if (newComment) {
-            const commentData = { userId: user.id, pageId, comment: newComment };
-            axios.post('/api/comments', commentData)
-                .then(response => {
-                    // Update comments state with the new comment
-                    setComments(prevComments => [...prevComments, response.data]);
-                    setNewComment('');
-                })
-                .catch(error => {
-                    console.error(error);
-                });
+            const commentData = { id: comments.length + 1, userId: user.id, pageId, comment: newComment, user: { username: user.username } };
+            const updatedComments = [...comments, commentData];
+            localStorage.setItem('comments', JSON.stringify(updatedComments));
+            dispatch({ type: 'ADD_COMMENT', payload: commentData });
+            setNewComment('');
         }
     };
 
     const handleDeleteComment = (commentId) => {
-        axios.delete(`/api/comments/${commentId}`) // Отправляем DELETE запрос для удаления комментария
-            .then(() => {
-                // Фильтруем удаленный комментарий из списка
-                setComments(prevComments => prevComments.filter(comment => comment.id !== commentId));
-            })
-            .catch(error => {
-                console.error('Ошибка при удалении комментария:', error);
-            });
+        const updatedComments = comments.filter(comment => comment.id !== commentId);
+        localStorage.setItem('comments', JSON.stringify(updatedComments));
+        dispatch({ type: 'REMOVE_COMMENT', payload: commentId });
     };
 
     return (
