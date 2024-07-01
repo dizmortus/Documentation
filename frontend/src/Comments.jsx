@@ -1,34 +1,57 @@
-// Documentation/frontend/components/Comments.jsx
-
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
+import TokenService from './services/TokenService';
+import api from "./services/api";
 
 const Comments = ({ pageId }) => {
     const [newComment, setNewComment] = useState('');
-    const comments = useSelector(state => state.comments.comments.filter(comment => comment.pageId === pageId));
+    const [comments, setComments] = useState([]);
     const user = useSelector(state => state.user.user);
     const isAdmin = user?.role === 'admin';
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const storedComments = JSON.parse(localStorage.getItem('comments')) || [];
-        dispatch({ type: 'SET_COMMENTS', payload: storedComments });
-    }, [dispatch]);
+        const fetchComments = async () => {
+            try {
+                const response = await api.get(`/api/comments/${pageId}`);
+                setComments(response.data);
+            } catch (err) {
+                console.error('Error fetching comments:', err);
+            }
+        };
 
-    const handleAddComment = () => {
+        fetchComments();
+    }, [pageId, dispatch]);
+
+    const handleAddComment = async () => {
         if (newComment) {
-            const commentData = { id: comments.length + 1, userId: user.id, pageId, comment: newComment, user: { username: user.username } };
-            const updatedComments = [...comments, commentData];
-            localStorage.setItem('comments', JSON.stringify(updatedComments));
-            dispatch({ type: 'ADD_COMMENT', payload: commentData });
-            setNewComment('');
+            try {
+                const commentData = { userId: user.id, pageId, comment: newComment };
+                const response = await api.post('/api/comments', commentData, {
+                    headers: {
+                        'x-access-token': `${TokenService.getLocalAccessToken()}`
+                    }
+                });
+                setComments([...comments, response.data]);
+                setNewComment('');
+            } catch (err) {
+                console.error('Error adding comment:', err);
+            }
         }
     };
 
-    const handleDeleteComment = (commentId) => {
-        const updatedComments = comments.filter(comment => comment.id !== commentId);
-        localStorage.setItem('comments', JSON.stringify(updatedComments));
-        dispatch({ type: 'REMOVE_COMMENT', payload: commentId });
+    const handleDeleteComment = async (commentId) => {
+        try {
+            await api.delete(`/api/comments/${commentId}`, {
+                headers: {
+                    'x-access-token': `${TokenService.getLocalAccessToken()}`
+                }
+            });
+            setComments(comments.filter(comment => comment.id !== commentId));
+        } catch (err) {
+            console.error('Error deleting comment:', err);
+        }
     };
 
     return (

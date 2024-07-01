@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { checkRole } = require('../middleware/checkRole');
-const db =require('../config/database')
-const Comment = db.comment
-
+const db = require('../config/database');
+const Comment = db.comment;
 
 // Добавление нового комментария
 router.post('/', async (req, res) => {
@@ -13,11 +12,11 @@ router.post('/', async (req, res) => {
         const commentWithUser = await Comment.findOne({
             where: { id: newComment.id },
             include: {
-              model: db.user,
-              as: 'user',
-              attributes: ['username']
+                model: db.user,
+                as: 'user',
+                attributes: ['username']
             }
-            });
+        });
         res.status(201).json(commentWithUser);
     } catch (err) {
         console.error(err);
@@ -33,14 +32,30 @@ router.get('/:pageId', async (req, res) => {
             where: { pageId: pageId },
             include: {
                 model: db.user,
-                as: 'user', // Ensure this matches the alias defined in the model association
-                attributes: ['username'] // Only include the username
+                as: 'user',
+                attributes: ['username']
             }
         });
         res.json(comments);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to retrieve comments' });
+    }
+});
+
+// Удаление комментария
+router.delete('/:commentId', async (req, res) => {
+    const { commentId } = req.params;
+    try {
+        const result = await Comment.destroy({ where: { id: commentId } });
+        if (result) {
+            res.json({ message: 'Comment deleted successfully' });
+        } else {
+            res.status(404).json({ error: 'Comment not found' });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to delete comment' });
     }
 });
 
