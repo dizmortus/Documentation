@@ -126,9 +126,6 @@ function MainApp() {
             console.error('Error removing page:', err);
         }
     };
-    console.log('User role in MainApp:', user ? user.role : null);
-        const isLoggedIn = !!user;
-        const isAdmin = user?.role === 'admin';
 
     const handleShowLogin = () => {
         setShowLoginForm(true);
@@ -157,7 +154,7 @@ function MainApp() {
                 <h1>Техническая документация</h1>
                 <p>Количество страниц: {pageCount}</p>
                 <div className="auth-buttons">
-                    {isLoggedIn ? (
+                    {user ? (
                         <button onClick={handleLogout} className="auth-button">Выйти</button>
                     ) : (
                         <>
@@ -172,7 +169,7 @@ function MainApp() {
                     {pages.map(page => (
                         <div key={page.id} className="page-link">
                             <Link to={`/page/${page.id}`}>{page.title}</Link>
-                            {isAdmin && (
+                            {user?.role === 'admin' && (
                                 <>
                                     <button onClick={() => editPage(page.id)} className="edit-button">Редактировать</button>
                                     <button onClick={() => removePage(page.id)} className="remove-button">Удалить</button>
@@ -182,17 +179,17 @@ function MainApp() {
                     ))}
                 </nav>
                 <main>
-                    {!isLoggedIn && showLoginForm && (
+                    {!user && showLoginForm && (
                         <div className="login-container">
                             <LoginForm onLogin={handleLogin} />
                         </div>
                     )}
-                    {!isLoggedIn && showRegisterForm && (
+                    {!user && showRegisterForm && (
                         <div className="register-container">
                             <RegisterForm onRegister={handleRegister} />
                         </div>
                     )}
-                    {isLoggedIn && isAdmin && (
+                    {user?.role === 'admin' && (
                         <>
                             <button onClick={handleShowModal} className="add-page-button">Добавить страницу</button>
                             <Modal show={showModal} onClose={handleCloseModal}>
