@@ -12,6 +12,41 @@ router.use(function (req, res, next) {
   );
   next();
 });
+
+router.get("/check-auth", async (req, res) => {
+  let token = req.headers["x-access-token"];
+
+  if (!token) {
+    return res.status(403).json({ message: "No token provided!" });
+  }
+
+  try {
+    // Проверка и верификация токена
+    jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+      if (err) {
+        console.error("Token verification failed:", err);
+        return res.status(401).json({ message: "Unauthorized! Invalid token provided!" });
+      }
+
+      // Проверка наличия пользователя в базе данных
+      const user = await User.findByPk(decoded.id);
+      if (!user) {
+        return res.status(404).json({ message: "User not found!" });
+      }
+
+      // Возвращаем информацию о пользователе
+      return res.json({
+        id: user.id,
+        username: user.username,
+        role: user.role,
+      });
+    });
+  } catch (error) {
+    console.error("Error checking authentication:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 router.post("/register", async (req, res) => {
   const { username, password } = req.body;
   try {

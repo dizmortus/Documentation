@@ -91,7 +91,7 @@ function MainApp() {
             try {
                 const response = await api.put(`/api/pages/${editingPageId}`, { title, content }, {
                     headers: {
-                        'x-access-token': ` ${TokenService.getLocalAccessToken()}`
+                        'x-access-token': `${TokenService.getLocalAccessToken()}`
                     }
                 });
                 const updatedPage = response.data;
@@ -118,7 +118,7 @@ function MainApp() {
         try {
             await api.delete(`/api/pages/${pageId}`, {
                 headers: {
-                    'x-access-token': ` ${TokenService.getLocalAccessToken()}`
+                    'x-access-token': `${TokenService.getLocalAccessToken()}`
                 }
             });
             dispatch({ type: 'REMOVE_PAGE', payload: pageId });
@@ -128,6 +128,7 @@ function MainApp() {
     };
 
     const isLoggedIn = !!user;
+    console.log(!!user);
     const isAdmin = user?.role === 'admin';
 
     const handleShowLogin = () => {
