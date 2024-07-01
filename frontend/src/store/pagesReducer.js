@@ -1,4 +1,4 @@
-// Файл Documentation/frontend/store/pagesReducer.js
+// Documentation/frontend/store/pagesReducer.js
 
 const initialState = {
     pages: [],
@@ -24,6 +24,13 @@ function pagesReducer(state = initialState, action) {
                 ...state,
                 pages: state.pages.filter(page => page.id !== action.payload),
                 pageCount: state.pageCount - 1,
+            };
+        case 'UPDATE_PAGE':
+            return {
+                ...state,
+                pages: state.pages.map(page =>
+                    page.id === action.payload.id ? action.payload : page
+                ),
             };
         default:
             return state;
