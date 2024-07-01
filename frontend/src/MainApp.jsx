@@ -71,7 +71,7 @@ function MainApp() {
             try {
                 const response = await api.post('/api/pages', { title, content }, {
                     headers: {
-                        'x-access-token': `Bearer ${TokenService.getLocalAccessToken()}`
+                        'x-access-token': `${TokenService.getLocalAccessToken()}`
                     }
                 });
                 const newPage = response.data;
@@ -126,10 +126,9 @@ function MainApp() {
             console.error('Error removing page:', err);
         }
     };
-
-    const isLoggedIn = !!user;
-    console.log(!!user);
-    const isAdmin = user?.role === 'admin';
+    console.log('User role in MainApp:', user ? user.role : null);
+        const isLoggedIn = !!user;
+        const isAdmin = user?.role === 'admin';
 
     const handleShowLogin = () => {
         setShowLoginForm(true);

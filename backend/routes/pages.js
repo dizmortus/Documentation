@@ -9,7 +9,7 @@ const router = express.Router();
 // POST: Создание новой страницы
 router.post('/', verifyToken, checkRole('admin'), async (req, res) => {
     const { title, content } = req.body;
-    const createdBy = req.userId; // Предполагается, что req.userId содержит ID пользователя
+    const createdBy = req.user.id; // Предполагается, что req.userId содержит ID пользователя
 
     if (!title || !content) return res.status(400).send('Title and content are required');
 

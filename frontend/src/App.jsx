@@ -5,6 +5,7 @@ import DynamicPage from './DynamicPage.jsx';
 import axios from 'axios';
 import TokenService from './services/TokenService';
 import { useDispatch, useSelector } from 'react-redux';
+import api from "./services/api";
 
 function App() {
     const [isLoading, setIsLoading] = useState(true);
@@ -19,11 +20,14 @@ function App() {
         const checkAuthentication = async () => {
             try {
                 // Проверка аутентификации на сервере
-                await axios.get('/api/auth/check-auth', {
+                const response = await api.get('/api/auth/check-auth', {
                     headers: {
                         'x-access-token': `${TokenService.getLocalAccessToken()}`
                     }
                 });
+                console.log('Authentication complete');
+                console.log('Server response:', response.data);
+                TokenService.setUser(response.data);
                 // Пользователь аутентифицирован, не делаем ничего
             } catch (error) {
                 // Обработка ошибки аутентификации
@@ -38,6 +42,7 @@ function App() {
                     console.error('Exceeded max authentication attempts.');
                 }
             } finally {
+                console.log('User role:', user ? user.role : null);
                 setIsLoading(false);
             }
         };
