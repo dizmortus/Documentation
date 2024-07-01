@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
@@ -36,16 +36,6 @@ function MainApp() {
         TokenService.removeUser();
         dispatch({ type: 'LOGOUT_USER' });
     };
-
-    useEffect(() => {
-        const storedUser = TokenService.getUser();
-        if (storedUser) {
-            dispatch({ type: 'SET_USER', payload: storedUser });
-        }
-
-        const storedPages = JSON.parse(localStorage.getItem('pages')) || [];
-        dispatch({ type: 'SET_PAGES', payload: storedPages });
-    }, [dispatch]);
 
     const addPage = () => {
         if (title && content) {

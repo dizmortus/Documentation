@@ -10,7 +10,7 @@ import commentsReducer from "./commentsReducer";
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist: ['pages', 'user'] // сохраняем только эти редьюсеры
+    whitelist: ['pages', 'user', 'comments'] // сохраняем только эти редьюсеры
 };
 
 const rootReducer = combineReducers({
