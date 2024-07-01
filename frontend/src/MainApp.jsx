@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
@@ -7,7 +7,9 @@ import LoginForm from './LoginForm.jsx';
 import RegisterForm from './RegisterForm.jsx';
 import TokenService from './services/TokenService.js';
 import Comments from './Comments.jsx';
+import axios from 'axios';
 import './styles.css';
+import api from "./services/api";
 
 function MainApp() {
     const [title, setTitle] = useState('');
@@ -19,6 +21,20 @@ function MainApp() {
     const dispatch = useDispatch();
     const [showLoginForm, setShowLoginForm] = useState(false);
     const [showRegisterForm, setShowRegisterForm] = useState(false);
+
+    useEffect(() => {
+        // Fetch pages from the server
+        const fetchPages = async () => {
+            try {
+                const response = await api.get('/api/pages');
+                dispatch({ type: 'SET_PAGES', payload: response.data });
+            } catch (err) {
+                console.error('Error fetching pages:', err);
+            }
+        };
+
+        fetchPages();
+    }, [dispatch]);
 
     const handleLogin = (userData) => {
         TokenService.setUser(userData);
@@ -37,23 +53,41 @@ function MainApp() {
         dispatch({ type: 'LOGOUT_USER' });
     };
 
-    const addPage = () => {
+    const addPage = async () => {
         if (title && content) {
-            const newPage = { id: pages.length + 1, title, content };
-            dispatch({ type: 'ADD_PAGE', payload: newPage });
-            setTitle('');
-            setContent('');
-            setEditingPageId(null);
+            try {
+                const response = await api.post('/api/pages', { title, content }, {
+                    headers: {
+                        'x-access-token': `Bearer ${TokenService.getLocalAccessToken()}`
+                    }
+                });
+                const newPage = response.data;
+                dispatch({ type: 'ADD_PAGE', payload: newPage });
+                setTitle('');
+                setContent('');
+                setEditingPageId(null);
+            } catch (err) {
+                console.error('Error adding page:', err);
+            }
         }
     };
 
-    const savePage = () => {
+    const savePage = async () => {
         if (editingPageId !== null && title && content) {
-            const updatedPage = { id: editingPageId, title, content };
-            dispatch({ type: 'UPDATE_PAGE', payload: updatedPage });
-            setTitle('');
-            setContent('');
-            setEditingPageId(null);
+            try {
+                const response = await api.put(`/api/pages/${editingPageId}`, { title, content }, {
+                    headers: {
+                        'x-access-token': ` ${TokenService.getLocalAccessToken()}`
+                    }
+                });
+                const updatedPage = response.data;
+                dispatch({ type: 'UPDATE_PAGE', payload: updatedPage });
+                setTitle('');
+                setContent('');
+                setEditingPageId(null);
+            } catch (err) {
+                console.error('Error saving page:', err);
+            }
         }
     };
 
@@ -64,8 +98,17 @@ function MainApp() {
         setEditingPageId(pageId);
     };
 
-    const removePage = (pageId) => {
-        dispatch({ type: 'REMOVE_PAGE', payload: pageId });
+    const removePage = async (pageId) => {
+        try {
+            await api.delete(`/api/pages/${pageId}`, {
+                headers: {
+                    'x-access-token': ` ${TokenService.getLocalAccessToken()}`
+                }
+            });
+            dispatch({ type: 'REMOVE_PAGE', payload: pageId });
+        } catch (err) {
+            console.error('Error removing page:', err);
+        }
     };
 
     const isLoggedIn = !!user;

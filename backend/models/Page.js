@@ -1,45 +1,60 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
 
-module.exports=(sequelize, Sequelize) => { 
-const Page = sequelize.define('Page', {
-    id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
-    },
-    createdAt: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
-    },
-    updatedAt: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
-    }
-}, {
-    hooks: {
-        // Хук при создании страницы
-        async afterCreate(page) {
-            try {
-                // Создание записи в базе данных
-                await Page.create({ id: page.id });
-                console.log(`Page ${page.id} created in database.`);
-            } catch (err) {
-                console.error('Error creating page in database:', err);
-            }
+module.exports = (sequelize, Sequelize) => {
+    const Page = sequelize.define('Page', {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
         },
-        // Хук при удалении страницы
-        async afterDestroy(page) {
-            try {
-                // Удаление записи из базы данных
-                await Page.destroy({ where: { id: page.id } });
-                console.log(`Page ${page.id} deleted from database.`);
-            } catch (err) {
-                console.error('Error deleting page from database:', err);
+        title: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        content: {
+            type: DataTypes.TEXT,
+            allowNull: false
+        },
+        createdBy: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        updatedBy: {
+            type: DataTypes.INTEGER,
+            allowNull: true
+        },
+        createdAt: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW
+        },
+        updatedAt: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW
+        }
+    }, {
+        hooks: {
+            // Хук при создании страницы
+            async afterCreate(page) {
+                try {
+                    console.log(`Page ${page.id} created in database.`);
+                } catch (err) {
+                    console.error('Error creating page in database:', err);
+                }
+            },
+            // Хук при обновлении страницы
+            async beforeUpdate(page) {
+                page.updatedAt = new Date();
+            },
+            // Хук при удалении страницы
+            async afterDestroy(page) {
+                try {
+                    console.log(`Page ${page.id} deleted from database.`);
+                } catch (err) {
+                    console.error('Error deleting page from database:', err);
+                }
             }
         }
-    }
-});
-return Page
-}
+    });
 
+    return Page;
+}
