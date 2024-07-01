@@ -9,10 +9,23 @@ import TokenService from './services/TokenService.js';
 import Comments from './Comments.jsx';
 import './styles.css';
 
+const Modal = ({ show, onClose, children }) => {
+    if (!show) return null;
+
+    return (
+        <div className="modal-overlay">
+            <div className="modal">
+                {children}
+            </div>
+        </div>
+    );
+};
+
 function MainApp() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [editingPageId, setEditingPageId] = useState(null);
+    const [showModal, setShowModal] = useState(false);
     const pages = useSelector(state => state.pages.pages);
     const pageCount = useSelector(state => state.pages.pageCount);
     const user = useSelector(state => state.user.user);
@@ -44,6 +57,7 @@ function MainApp() {
             setTitle('');
             setContent('');
             setEditingPageId(null);
+            setShowModal(false);
         }
     };
 
@@ -54,6 +68,7 @@ function MainApp() {
             setTitle('');
             setContent('');
             setEditingPageId(null);
+            setShowModal(false);
         }
     };
 
@@ -62,6 +77,7 @@ function MainApp() {
         setTitle(page.title);
         setContent(page.content);
         setEditingPageId(pageId);
+        setShowModal(true);
     };
 
     const removePage = (pageId) => {
@@ -79,6 +95,17 @@ function MainApp() {
     const handleShowRegister = () => {
         setShowLoginForm(false);
         setShowRegisterForm(true);
+    };
+
+    const handleShowModal = () => {
+        setTitle('');
+        setContent('');
+        setEditingPageId(null);
+        setShowModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
     };
 
     return (
@@ -123,27 +150,31 @@ function MainApp() {
                         </div>
                     )}
                     {isLoggedIn && isAdmin && (
-                        <div className="page-editor">
-                            <input
-                                type="text"
-                                value={title}
-                                onChange={e => setTitle(e.target.value)}
-                                placeholder="Название страницы"
-                            /><br />
-                            <CKEditor
-                                editor={ClassicEditor}
-                                data={content}
-                                onChange={(event, editor) => {
-                                    const data = editor.getData();
-                                    setContent(data);
-                                }}
-                            /><br />
-                            {editingPageId !== null ? (
-                                <button onClick={savePage}>Сохранить</button>
-                            ) : (
-                                <button onClick={addPage}>Добавить</button>
-                            )}
-                        </div>
+                        <>
+                            <button onClick={handleShowModal} className="add-page-button">Добавить страницу</button>
+                            <Modal show={showModal} onClose={handleCloseModal}>
+                                <input
+                                    type="text"
+                                    value={title}
+                                    onChange={e => setTitle(e.target.value)}
+                                    placeholder="Название страницы"
+                                /><br />
+                                <CKEditor
+                                    editor={ClassicEditor}
+                                    data={content}
+                                    onChange={(event, editor) => {
+                                        const data = editor.getData();
+                                        setContent(data);
+                                    }}
+                                /><br />
+                                {editingPageId !== null ? (
+                                    <button onClick={savePage}>Сохранить</button>
+                                ) : (
+                                    <button onClick={addPage}>Добавить</button>
+                                )}
+                                <button onClick={handleCloseModal}>Закрыть</button>
+                            </Modal>
+                        </>
                     )}
                 </main>
                 <div className="comment-section">
