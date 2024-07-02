@@ -233,7 +233,7 @@ function MainApp() {
                 </div>
             </div>
             <footer>
-                <a>Кирилл навалил говна в мейн окно</a>
+                <article>Кирилл навалил говна в мейн окно</article><a href='https://www.alfabank.by/share?transferLinkId=6683b4b751868126136981ee&version=INSNC3'>(тык)</a>
             </footer>
         </div>
     );
