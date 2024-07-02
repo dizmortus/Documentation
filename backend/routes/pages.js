@@ -9,7 +9,7 @@ const router = express.Router();
 // POST: Создание новой страницы
 router.post('/', verifyToken, checkRole('admin'), async (req, res) => {
     const { title, content } = req.body;
-    const createdBy = req.userId; // Предполагается, что req.userId содержит ID пользователя
+    const createdBy = req.user.id; // Предполагается, что req.userId содержит ID пользователя
 
     if (!title || !content) return res.status(400).send('Title and content are required');
 
@@ -20,6 +20,28 @@ router.post('/', verifyToken, checkRole('admin'), async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).send('Error creating page');
+    }
+});
+
+// PUT: Обновление страницы по ID
+router.put('/:id', verifyToken, checkRole('admin'), async (req, res) => {
+    const { title, content } = req.body;
+    const pageId = req.params.id;
+
+    if (!title || !content) return res.status(400).send('Title and content are required');
+
+    try {
+        const page = await Page.findByPk(pageId);
+        if (!page) return res.status(404).send('Page not found');
+
+        page.title = title;
+        page.content = content;
+        await page.save();
+
+        res.status(200).json({ id: page.id, title: page.title, content: page.content });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error updating page');
     }
 });
 

@@ -71,7 +71,7 @@ function MainApp() {
             try {
                 const response = await api.post('/api/pages', { title, content }, {
                     headers: {
-                        'x-access-token': `Bearer ${TokenService.getLocalAccessToken()}`
+                        'x-access-token': `${TokenService.getLocalAccessToken()}`
                     }
                 });
                 const newPage = response.data;
@@ -91,7 +91,7 @@ function MainApp() {
             try {
                 const response = await api.put(`/api/pages/${editingPageId}`, { title, content }, {
                     headers: {
-                        'x-access-token': ` ${TokenService.getLocalAccessToken()}`
+                        'x-access-token': `${TokenService.getLocalAccessToken()}`
                     }
                 });
                 const updatedPage = response.data;
@@ -118,7 +118,7 @@ function MainApp() {
         try {
             await api.delete(`/api/pages/${pageId}`, {
                 headers: {
-                    'x-access-token': ` ${TokenService.getLocalAccessToken()}`
+                    'x-access-token': `${TokenService.getLocalAccessToken()}`
                 }
             });
             dispatch({ type: 'REMOVE_PAGE', payload: pageId });
@@ -126,9 +126,6 @@ function MainApp() {
             console.error('Error removing page:', err);
         }
     };
-
-    const isLoggedIn = !!user;
-    const isAdmin = user?.role === 'admin';
 
     const handleShowLogin = () => {
         setShowLoginForm(true);
@@ -157,7 +154,7 @@ function MainApp() {
             <h1>Техническая документация</h1>
             <p>Количество страниц: {pageCount}</p>
             <div className="auth-buttons">
-                {isLoggedIn ? (
+                {user ? (
                     <button onClick={handleLogout} className="auth-button">Выйти</button>
                 ) : (
                     <>
@@ -172,7 +169,7 @@ function MainApp() {
                 {pages.map(page => (
                     <div key={page.id} className="page-link">
                     <Link to={`/page/${page.id}`} className="link-title">{page.title}</Link>
-                    {isAdmin && (
+                    {user?.role === 'admin' && (
                       <div className="site-buttons">
                         <button onClick={() => editPage(page.id)} className="button-edit-with-image"></button>
                         <button onClick={() => removePage(page.id)} className="button-delete-with-image"></button>
@@ -192,17 +189,17 @@ function MainApp() {
                         Мы стремимся создать удобную и интуитивно понятную платформу, которая облегчит вам процесс поиска и изучения информации. 
                     Благодаря функциональному интерфейсу и удобной навигации, вы сможете быстро находить нужные разделы и статьи. Присоединяйтесь к нашему сообществу и начинайте свое путешествие в мир знаний и новых возможностей!
                     </article>
-                {!isLoggedIn && showLoginForm && (
+                {!user && showLoginForm && (
                     <div className="login-container">
                         <LoginForm onLogin={handleLogin} />
                     </div>
                 )}
-                {!isLoggedIn && showRegisterForm && (
+                {!user && showRegisterForm && (
                     <div className="register-container">
                         <RegisterForm onRegister={handleRegister} />
                     </div>
                 )}
-                {isLoggedIn && isAdmin && (
+                {user?.role === 'admin' && (
                     <>
                         <button onClick={handleShowModal} className="add-page-button">Добавить страницу</button>
                         <Modal show={showModal} onClose={handleCloseModal}>
