@@ -1,6 +1,13 @@
+:root {
+  --nav-color: rgb(6, 150, 95);
+  --main-color: rgb(111, 223, 176);
+}
+
 body {
+  background-color: var(--main-color);
   font-family: Arial, sans-serif;
   margin: 0;
+  bottom: 0;
   padding: 0 10px; /* Отступы по бокам страницы */
   display: flex;
   flex-direction: column;
@@ -14,7 +21,7 @@ body {
 }
 
 header {
-  background-color: #f8f8f8;
+  background-color: var(--nav-color);
   padding: 10px;
   text-align: center;
   position: relative;
@@ -50,10 +57,14 @@ header p {
   padding: 0 10px; /* Отступы по бокам */
 }
 
-nav#pageMenu {
-  background-color: #e8e8e8;
+#pageMenu {
+  background-color: var(--nav-color);
   padding: 10px;
   width: 200px;
+  height: 100vh; /* Высота на весь экран */
+  position: fixed; /* Фиксированное позиционирование */
+  top: 0;
+  left: 0;
   overflow-y: auto;
 }
 
@@ -85,16 +96,17 @@ main {
 
 .comment-section {
   width: 100%;
-  max-width: 400px;
+  max-width: 500px;
   margin: 0 auto 20px auto; /* Центрирование блока с комментариями */
   padding: 10px;
   background-color: #f0f0f0;
   border: 1px solid #ccc;
   border-radius: 5px;
-  position: absolute;
-  bottom: 30px; /* Отступ над футером */
-  left: 50%;
-  transform: translateX(-50%);
+}
+
+.comments-container {
+  max-height: 300px; /* Фиксированная высота блока с комментариями */
+  overflow-y: auto; /* Полоса прокрутки для комментариев */
 }
 
 .comments {
@@ -227,4 +239,49 @@ footer a {
 
 .ck.ck-content.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline.ck-blurred {
   width: auto;
+}
+
+.page-link {
+  display: flex;
+  justify-content: space-between; /* Разместить контент по обе стороны */
+  align-items: center; /* Выравнивание по вертикали */
+  margin-bottom: 10px; /* Отступ между ссылками */
+}
+
+.site-buttons {
+  display: flex;
+  gap: 10px; /* Расстояние между кнопками */
+}
+
+.button-edit-with-image, .button-delete-with-image {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent; /* Прозрачный фон */
+  border: none;
+  width: 20px; /* Размеры кнопки */
+  height: 20px;
+  cursor: pointer;
+}
+
+.button-edit-with-image {
+  background-image: url('images/pencil.png'); /* Путь к вашему изображению */
+}
+
+.button-delete-with-image {
+  background-image: url('images/close.png'); /* Путь к вашему изображению */
+}
+
+.button-edit-with-image:hover, .button-delete-with-image:hover {
+  opacity: 0.8; /* Эффект при наведении */
+}
+
+.link-title {
+  font-size: 18px; /* Измените размер текста по вашему усмотрению */
+  font-weight: bold; /* Добавьте жирный шрифт, если нужно */
+  color: #000; /* Цвет текста, если нужно */
+}
+
+.main-content {
+  height: auto;
 }

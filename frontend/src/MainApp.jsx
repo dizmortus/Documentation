@@ -152,82 +152,93 @@ function MainApp() {
     };
 
     return (
-        <div className="app">
-            <header>
-                <h1>Техническая документация</h1>
-                <p>Количество страниц: {pageCount}</p>
-                <div className="auth-buttons">
-                    {isLoggedIn ? (
-                        <button onClick={handleLogout} className="auth-button">Выйти</button>
-                    ) : (
-                        <>
-                            <button onClick={handleShowLogin} className="auth-button">Войти</button>
-                            <button onClick={handleShowRegister} className="auth-button">Зарегистрироваться</button>
-                        </>
-                    )}
-                </div>
-            </header>
-            <div className="content">
-                <nav id="pageMenu">
-                    {pages.map(page => (
-                        <div key={page.id} className="page-link">
-                            <Link to={`/page/${page.id}`}>{page.title}</Link>
-                            {isAdmin && (
-                                <>
-                                    <button onClick={() => editPage(page.id)} className="edit-button">Редактировать</button>
-                                    <button onClick={() => removePage(page.id)} className="remove-button">Удалить</button>
-                                </>
-                            )}
-                        </div>
-                    ))}
-                </nav>
-                <main>
-                    {!isLoggedIn && showLoginForm && (
-                        <div className="login-container">
-                            <LoginForm onLogin={handleLogin} />
-                        </div>
-                    )}
-                    {!isLoggedIn && showRegisterForm && (
-                        <div className="register-container">
-                            <RegisterForm onRegister={handleRegister} />
-                        </div>
-                    )}
-                    {isLoggedIn && isAdmin && (
-                        <>
-                            <button onClick={handleShowModal} className="add-page-button">Добавить страницу</button>
-                            <Modal show={showModal} onClose={handleCloseModal}>
-                                <input
-                                    type="text"
-                                    value={title}
-                                    onChange={e => setTitle(e.target.value)}
-                                    placeholder="Название страницы"
-                                /><br />
-                                <CKEditor
-                                    editor={ClassicEditor}
-                                    data={content}
-                                    onChange={(event, editor) => {
-                                        const data = editor.getData();
-                                        setContent(data);
-                                    }}
-                                /><br />
-                                {editingPageId !== null ? (
-                                    <button onClick={savePage}>Сохранить</button>
-                                ) : (
-                                    <button onClick={addPage}>Добавить</button>
-                                )}
-                                <button onClick={handleCloseModal}>Закрыть</button>
-                            </Modal>
-                        </>
-                    )}
-                </main>
-                <div className="comment-section">
-                    <Comments pageId={0} />
-                </div>
+    <div className="app">
+        <header>
+            <h1>Техническая документация</h1>
+            <p>Количество страниц: {pageCount}</p>
+            <div className="auth-buttons">
+                {isLoggedIn ? (
+                    <button onClick={handleLogout} className="auth-button">Выйти</button>
+                ) : (
+                    <>
+                        <button onClick={handleShowLogin} className="auth-button">Войти</button>
+                        <button onClick={handleShowRegister} className="auth-button" a>Зарегистрироваться</button>
+                    </>
+                )}
             </div>
-            <footer>
-                <a>Сделали студенты из БНТУ</a>
-            </footer>
+        </header>
+        <div className="content">
+            <div className= "pageMenu"id="pageMenu">
+                {pages.map(page => (
+                    <div key={page.id} className="page-link">
+                    <Link to={`/page/${page.id}`} className="link-title">{page.title}</Link>
+                    {isAdmin && (
+                      <div className="site-buttons">
+                        <button onClick={() => editPage(page.id)} className="button-edit-with-image"></button>
+                        <button onClick={() => removePage(page.id)} className="button-delete-with-image"></button>
+                      </div>
+                    )}
+                  </div>
+                  
+                ))}
+            </div>
+            <main>
+                <div className='main-content'>
+                    <article>
+                        Приветствуем вас на нашем сайте, посвященном чтению и изучению технической документации! 
+                    Здесь вы найдете все необходимые ресурсы для того, чтобы углубиться в различные аспекты программирования и разработки. 
+                    Независимо от вашего уровня опыта, наш сайт предоставляет доступ к высококачественным материалам, которые помогут вам лучше понять и использовать современные технологии.
+
+                        Мы стремимся создать удобную и интуитивно понятную платформу, которая облегчит вам процесс поиска и изучения информации. 
+                    Благодаря функциональному интерфейсу и удобной навигации, вы сможете быстро находить нужные разделы и статьи. Присоединяйтесь к нашему сообществу и начинайте свое путешествие в мир знаний и новых возможностей!
+                    </article>
+                {!isLoggedIn && showLoginForm && (
+                    <div className="login-container">
+                        <LoginForm onLogin={handleLogin} />
+                    </div>
+                )}
+                {!isLoggedIn && showRegisterForm && (
+                    <div className="register-container">
+                        <RegisterForm onRegister={handleRegister} />
+                    </div>
+                )}
+                {isLoggedIn && isAdmin && (
+                    <>
+                        <button onClick={handleShowModal} className="add-page-button">Добавить страницу</button>
+                        <Modal show={showModal} onClose={handleCloseModal}>
+                            <input
+                                type="text"
+                                value={title}
+                                onChange={e => setTitle(e.target.value)}
+                                placeholder="Название страницы"
+                            /><br />
+                            <CKEditor
+                                editor={ClassicEditor}
+                                data={content}
+                                onChange={(event, editor) => {
+                                    const data = editor.getData();
+                                    setContent(data);
+                                }}
+                            /><br />
+                            {editingPageId !== null ? (
+                                <button onClick={savePage}>Сохранить</button>
+                            ) : (
+                                <button onClick={addPage}>Добавить</button>
+                            )}
+                            <button onClick={handleCloseModal}>Закрыть</button>
+                        </Modal>
+                    </>
+                )}
+                </div>
+                <Comments pageId={0} />
+            </main>
+            
         </div>
+        <footer>
+            <a>Сделали студенты из БНТУ</a>
+        </footer>
+    </div>
+
     );
 }
 
