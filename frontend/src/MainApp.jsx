@@ -36,8 +36,7 @@ function MainApp() {
     const pageCount = useSelector(state => state.pages.pageCount);
     const user = useSelector(state => state.user.user);
     const dispatch = useDispatch();
-    const [showLoginForm, setShowLoginForm] = useState(false);
-    const [showRegisterForm, setShowRegisterForm] = useState(false);
+    
     const [showSearchModal, setShowSearchModal] = useState(false);
 
     const handleOpenSearchModal = () => {
