@@ -17,6 +17,7 @@ const Modal = ({ show, onClose, children }) => {
     return (
         <div className="modal-overlay">
             <div className="modal">
+                <button onClick={onClose} className="close-button">&times;</button>
                 {children}
             </div>
         </div>
@@ -28,12 +29,12 @@ function MainApp() {
     const [content, setContent] = useState('');
     const [editingPageId, setEditingPageId] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [showLoginForm, setShowLoginForm] = useState(false);
+    const [showRegisterForm, setShowRegisterForm] = useState(false);
     const pages = useSelector(state => state.pages.pages);
     const pageCount = useSelector(state => state.pages.pageCount);
     const user = useSelector(state => state.user.user);
     const dispatch = useDispatch();
-    const [showLoginForm, setShowLoginForm] = useState(false);
-    const [showRegisterForm, setShowRegisterForm] = useState(false);
 
     useEffect(() => {
         const fetchPages = async () => {
@@ -179,38 +180,42 @@ function MainApp() {
                             Мы стремимся создать удобную и интуитивно понятную платформу, которая облегчит вам процесс поиска и изучения информации.
                             Благодаря функциональному интерфейсу и удобной навигации, вы сможете быстро находить нужные разделы и статьи. Присоединяйтесь к нашему сообществу и начинайте свое путешествие в мир знаний и новых возможностей!
                         </article>
-                        {!user && showLoginForm && (
-                            <div className="login-container">
+                        <Modal show={showLoginForm} onClose={() => setShowLoginForm(false)}>
+                            <div className={showLoginForm ? 'form-container' : 'form-container hidden'}>
                                 <LoginForm onLogin={handleLogin} />
                             </div>
-                        )}
-                        {!user && showRegisterForm && (
-                            <div className="register-container">
+                        </Modal>
+                        <Modal show={showRegisterForm} onClose={() => setShowRegisterForm(false)}>
+                            <div className={showRegisterForm ? 'form-container' : 'form-container hidden'}>
                                 <RegisterForm onRegister={handleRegister} />
                             </div>
-                        )}
+                        </Modal>
                         {user?.role === 'admin' && (
                             <Modal show={showModal} onClose={handleCloseModal}>
-                                <input
-                                    type="text"
-                                    value={title}
-                                    onChange={e => setTitle(e.target.value)}
-                                    placeholder="Название страницы"
-                                /><br />
-                                <CKEditor
-                                    editor={ClassicEditor}
-                                    data={content}
-                                    onChange={(event, editor) => {
-                                        const data = editor.getData();
-                                        setContent(data);
-                                    }}
-                                /><br />
-                                {editingPageId !== null ? (
-                                    <button onClick={savePage} className="auth-button">Сохранить</button>
-                                ) : (
-                                    <button onClick={addPage} className="auth-button">Добавить</button>
-                                )}
-                                <button onClick={handleCloseModal} className="auth-button">Закрыть</button>
+                                <div className="modal-content">
+                                    <input
+                                        type="text"
+                                        value={title}
+                                        onChange={e => setTitle(e.target.value)}
+                                        placeholder="Название страницы"
+                                        className="modal-title-input"
+                                    /><br />
+                                    <CKEditor
+                                        editor={ClassicEditor}
+                                        data={content}
+                                        onChange={(event, editor) => {
+                                            const data = editor.getData();
+                                            setContent(data);
+                                        }}
+                                    /><br />
+                                    <div className="modal-buttons">
+                                        {editingPageId !== null ? (
+                                            <button onClick={savePage} className="auth-button">Сохранить</button>
+                                        ) : (
+                                            <button onClick={addPage} className="auth-button">Добавить</button>
+                                        )}
+                                    </div>
+                                </div>
                             </Modal>
                         )}
                     </div>

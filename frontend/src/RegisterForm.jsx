@@ -1,8 +1,5 @@
-// Файл: RegisterForm.jsx
-
 import React, { useState } from 'react';
-import axios from 'axios';
-import api from './services/api'
+import api from './services/api';
 
 const RegisterForm = ({ onRegister }) => {
     const [username, setUsername] = useState('');
@@ -22,9 +19,9 @@ const RegisterForm = ({ onRegister }) => {
     };
 
     return (
-        <form onSubmit={handleRegister}>
+        <form onSubmit={handleRegister} className="auth-form">
             <h2>Регистрация</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+            {error && <p className="error-message">{error}</p>}
             <div>
                 <input
                     type="text"
@@ -32,6 +29,7 @@ const RegisterForm = ({ onRegister }) => {
                     value={username}
                     onChange={e => setUsername(e.target.value)}
                     required
+                    className="auth-input"
                 />
             </div>
             <div>
@@ -41,9 +39,10 @@ const RegisterForm = ({ onRegister }) => {
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                     required
+                    className="auth-input"
                 />
             </div>
-            <button type="submit">Зарегистрироваться</button>
+            <button type="submit" className="auth-button">Зарегистрироваться</button>
         </form>
     );
 };
