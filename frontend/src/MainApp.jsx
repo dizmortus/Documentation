@@ -11,11 +11,11 @@ import axios from 'axios';
 import './styles.css';
 import api from "./services/api";
 
-const Modal = ({ show, onClose, children }) => {
+const Modal = ({ show, onClose, className, children }) => {
     if (!show) return null;
 
     return (
-        <div className="modal-overlay">
+        <div className={`modal-overlay ${className}`}>
             <div className="modal">
                 <button onClick={onClose} className="close-button">&times;</button>
                 {children}
@@ -23,6 +23,7 @@ const Modal = ({ show, onClose, children }) => {
         </div>
     );
 };
+
 
 function MainApp() {
     const [title, setTitle] = useState('');
@@ -180,10 +181,10 @@ function MainApp() {
                             Мы стремимся создать удобную и интуитивно понятную платформу, которая облегчит вам процесс поиска и изучения информации.
                             Благодаря функциональному интерфейсу и удобной навигации, вы сможете быстро находить нужные разделы и статьи. Присоединяйтесь к нашему сообществу и начинайте свое путешествие в мир знаний и новых возможностей!
                         </article>
-                        <Modal className='auth-form' show={showLoginForm} onClose={() => setShowLoginForm(false)}>
+                        <Modal show={showLoginForm} onClose={() => setShowLoginForm(false)}>
                                 <LoginForm onLogin={handleLogin} />
                         </Modal>
-                        <Modal className='auth-form' show={showRegisterForm} onClose={() => setShowRegisterForm(false)}>
+                        <Modal show={showRegisterForm} onClose={() => setShowRegisterForm(false)}>
                                 <RegisterForm onRegister={handleRegister} />
                         </Modal>
                         {user?.role === 'admin' && (
