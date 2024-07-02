@@ -54,13 +54,13 @@ header {
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
-  width: 100%;
 }
 
 .pageMenu {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
+  width: auto;
   justify-content: flex-start;
 }
 
@@ -158,7 +158,7 @@ header {
 }
 
 .modal-title-input {
-  width: calc(100% - 20px);
+  width: auto;
   padding: 15px;
   border-radius: 5px;
   border: 1px solid #ddd;
@@ -258,7 +258,7 @@ header {
 }
 
 .auth-form .auth-input {
-  width: calc(100% - 20px);
+  width: auto;
   padding: 10px;
   margin-bottom: 10px;
   border: 1px solid #ddd;
@@ -298,7 +298,7 @@ header {
 }
 
 .page-title-form .page-title-input {
-  width: calc(100% - 20px);
+  width: auto;
   padding: 15px; /* Increased padding for larger input */
   margin-bottom: 10px;
   border: 1px solid #ddd;
@@ -339,3 +339,9 @@ footer a:hover {
 .hidden {
   display: none;
 }
+
+.modal-buttons {
+  display: flex;
+  flex-direction: row-reverse;
+}
+

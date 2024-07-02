@@ -180,26 +180,23 @@ function MainApp() {
                             Мы стремимся создать удобную и интуитивно понятную платформу, которая облегчит вам процесс поиска и изучения информации.
                             Благодаря функциональному интерфейсу и удобной навигации, вы сможете быстро находить нужные разделы и статьи. Присоединяйтесь к нашему сообществу и начинайте свое путешествие в мир знаний и новых возможностей!
                         </article>
-                        <Modal show={showLoginForm} onClose={() => setShowLoginForm(false)}>
-                            <div className={showLoginForm ? 'form-container' : 'form-container hidden'}>
+                        <Modal className='auth-form' show={showLoginForm} onClose={() => setShowLoginForm(false)}>
                                 <LoginForm onLogin={handleLogin} />
-                            </div>
                         </Modal>
-                        <Modal show={showRegisterForm} onClose={() => setShowRegisterForm(false)}>
-                            <div className={showRegisterForm ? 'form-container' : 'form-container hidden'}>
+                        <Modal className='auth-form' show={showRegisterForm} onClose={() => setShowRegisterForm(false)}>
                                 <RegisterForm onRegister={handleRegister} />
-                            </div>
                         </Modal>
                         {user?.role === 'admin' && (
                             <Modal show={showModal} onClose={handleCloseModal}>
                                 <div className="modal-content">
+                                    <br />
                                     <input
                                         type="text"
                                         value={title}
                                         onChange={e => setTitle(e.target.value)}
                                         placeholder="Название страницы"
                                         className="modal-title-input"
-                                    /><br />
+                                    />
                                     <CKEditor
                                         editor={ClassicEditor}
                                         data={content}
@@ -207,7 +204,7 @@ function MainApp() {
                                             const data = editor.getData();
                                             setContent(data);
                                         }}
-                                    /><br />
+                                    />
                                     <div className="modal-buttons">
                                         {editingPageId !== null ? (
                                             <button onClick={savePage} className="auth-button">Сохранить</button>
