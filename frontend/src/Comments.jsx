@@ -55,19 +55,21 @@ const Comments = ({ pageId }) => {
     };
 
     return (
-        <div className="comments">
-            <h3>Комментарии</h3>
-            {comments.map(comment => (
-                <div key={comment.id} className="comment">
-                    <p>{comment.comment}</p>
-                    <small>От: {comment.user.username}</small>
-                    {isAdmin && (
-                        <button onClick={() => handleDeleteComment(comment.id)} className="delete-button">
-                            Удалить
-                        </button>
-                    )}
-                </div>
-            ))}
+        <div className="comment-section">
+            <div className="comments-container">
+                <h3>Комментарии</h3>
+                {comments.map(comment => (
+                    <div key={comment.id} className="comment">
+                        <p>{comment.comment}</p>
+                        <small>От: {comment.user.username}</small>
+                        {isAdmin && (
+                            <button onClick={() => handleDeleteComment(comment.id)} className="delete-button">
+                                Удалить
+                            </button>
+                        )}
+                    </div>
+                ))}
+            </div>
             {user ? (
                 <div className="add-comment">
                     <textarea

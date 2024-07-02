@@ -1,5 +1,3 @@
-// Documentation/frontend/store/pagesReducer.js
-
 const initialState = {
     pages: [],
     pageCount: 0,

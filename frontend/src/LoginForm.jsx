@@ -27,9 +27,9 @@ const LoginForm = ({ onLogin }) => {
     };
 
     return (
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleLogin} className="auth-form">
             <h2>Вход</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+            {error && <p className="error-message">{error}</p>}
             <div>
                 <input
                     type="text"
@@ -37,6 +37,7 @@ const LoginForm = ({ onLogin }) => {
                     value={username}
                     onChange={e => setUsername(e.target.value)}
                     required
+                    className="auth-input"
                 />
             </div>
             <div>
@@ -46,9 +47,10 @@ const LoginForm = ({ onLogin }) => {
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                     required
+                    className="auth-input"
                 />
             </div>
-            <button type="submit">Войти</button>
+            <button type="submit" className="auth-button">Войти</button>
         </form>
     );
 };

@@ -10,15 +10,13 @@ const { Op } = require('sequelize');
 
 const router = express.Router();
 
-// POST: Создание новой страницы
 router.post('/', verifyToken, checkRole('admin'), async (req, res) => {
     const { title, content } = req.body;
-    const createdBy = req.user.id; // Предполагается, что req.userId содержит ID пользователя
+    const createdBy = req.user.id;
 
     if (!title || !content) return res.status(400).send('Title and content are required');
 
     try {
-        // Создание записи в базе данных
         const newPage = await Page.create({ title, content, createdBy });
         res.status(201).json({ id: newPage.id, title: newPage.title });
     } catch (err) {
@@ -27,7 +25,6 @@ router.post('/', verifyToken, checkRole('admin'), async (req, res) => {
     }
 });
 
-// PUT: Обновление страницы по ID
 router.put('/:id', verifyToken, checkRole('admin'), async (req, res) => {
     const { title, content } = req.body;
     const pageId = req.params.id;
@@ -49,7 +46,6 @@ router.put('/:id', verifyToken, checkRole('admin'), async (req, res) => {
     }
 });
 
-// DELETE: Удаление страницы по ID
 router.delete('/:id', verifyToken, checkRole('admin'), async (req, res) => {
     const pageId = req.params.id;
 
@@ -57,8 +53,12 @@ router.delete('/:id', verifyToken, checkRole('admin'), async (req, res) => {
         const page = await Page.findByPk(pageId);
         if (!page) return res.status(404).send('Page not found');
 
+        // Удалить все комментарии, связанные с этой страницей
+        await db.comment.destroy({ where: { pageId: pageId } });
+
+        // Удалить страницу
         await page.destroy();
-        console.log(`Page ${pageId} deleted from database.`);
+
         res.status(200).json({ response: 'success' });
     } catch (err) {
         console.error(err);
@@ -114,7 +114,6 @@ router.get('/:id', async (req, res) => {
 // GET: Поиск страниц
 
 
-// GET: Список всех страниц
 router.get('/', async (req, res) => {
     try {
         const pages = await Page.findAll({ attributes: ['id', 'title', 'content'] });
