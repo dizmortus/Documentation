@@ -10,6 +10,7 @@ import Comments from './Comments.jsx';
 import axios from 'axios';
 import './styles.css';
 import api from "./services/api";
+import SearchModal from './SearchModal.js';
 
 const Modal = ({ show, onClose, children }) => {
     if (!show) return null;
@@ -34,6 +35,15 @@ function MainApp() {
     const dispatch = useDispatch();
     const [showLoginForm, setShowLoginForm] = useState(false);
     const [showRegisterForm, setShowRegisterForm] = useState(false);
+    const [showSearchModal, setShowSearchModal] = useState(false);
+
+    const handleOpenSearchModal = () => {
+        setShowSearchModal(true);
+    };
+
+    const handleCloseSearchModal = () => {
+        setShowSearchModal(false);
+    };
 
     useEffect(() => {
         // Fetch pages from the server
@@ -152,6 +162,7 @@ function MainApp() {
         <div className="app">
             <header>
                 <h1>Техническая документация</h1>
+                <button onClick={handleOpenSearchModal}>Поиск</button>
                 <p>Количество страниц: {pageCount}</p>
                 <div className="auth-buttons">
                     {user ? (
@@ -220,10 +231,12 @@ function MainApp() {
                 <div className="comment-section">
                     <Comments pageId={0} />
                 </div>
+                
             </div>
             <footer>
                 <a>Сделали студенты из БНТУ</a>
             </footer>
+            <SearchModal isOpen={showSearchModal} onClose={handleCloseSearchModal} />
         </div>
     );
 }
