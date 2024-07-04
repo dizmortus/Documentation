@@ -3,18 +3,18 @@ import api from './services/api';
 import TokenService from "./services/TokenService";
 
 const LoginForm = ({ onLogin }) => {
-    const [username, setUsername] = useState('');
+    const [identifier, setIdentifier] = useState(''); // Изменено с username на identifier
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
     const handleLogin = (event) => {
         event.preventDefault(); // предотвращает перезагрузку страницы
-        api.post('/api/auth/login', { username, password })
+        api.post('/api/auth/login', { identifier, password }) // Изменено с username на identifier
             .then(response => {
                 const { token, user } = response.data;
                 if (user && user.accessToken) {
                     TokenService.setUser(user);
-                    alert("Вы вошли как " + username + ".");
+                    alert("Вы вошли как " + user.username + "."); // Изменено с identifier на user.username
                     onLogin(user);
                 } else {
                     setError("Неверные данные!");
@@ -33,9 +33,9 @@ const LoginForm = ({ onLogin }) => {
             <div>
                 <input
                     type="text"
-                    placeholder="Логин"
-                    value={username}
-                    onChange={e => setUsername(e.target.value)}
+                    placeholder="Логин или Email" // Изменен placeholder
+                    value={identifier}
+                    onChange={e => setIdentifier(e.target.value)} // Изменено с setUsername на setIdentifier
                     required
                     className="auth-input"
                 />

@@ -1,31 +1,37 @@
 const LocalStrategy = require('passport-local').Strategy;
-const db=require('../config/database')
-const User = db.user;
+const db = require('../config/database');
+const { user: User } = db;
 const jwt = require('jsonwebtoken');
+const { Op } = require('sequelize');
 
-/**
- * Configures the passport middleware with the LocalStrategy and serialization/deserialization functions.
- *
- * @param {Object} passport - The passport object.
- * @return {void}
- */
 module.exports = function(passport) {
   passport.use(new LocalStrategy(
-    async function(username, password, done) {
-      try {
-        const user = await User.findOne({ where: { username: username } });
-        if (!user) {
-          return done(null, false, { message: 'Incorrect username.' });
+      {
+        usernameField: 'identifier',
+        passwordField: 'password'
+      },
+      async function(identifier, password, done) {
+        try {
+          const user = await User.findOne({
+            where: {
+              [Op.or]: [{ username: identifier }, { email: identifier }] // Поиск по логину или email
+            }
+          });
+
+          if (!user) {
+            return done(null, false, { message: 'Incorrect username or email.' });
+          }
+
+          const isMatch = await user.comparePassword(password);
+          if (!isMatch) {
+            return done(null, false, { message: 'Incorrect password.' });
+          }
+
+          return done(null, user);
+        } catch (err) {
+          return done(err);
         }
-        const isMatch = await user.comparePassword(password);
-        if (!isMatch) {
-          return done(null, false, { message: 'Incorrect password.' });
-        }
-        return done(null, user);
-      } catch (err) {
-        return done(err);
       }
-    }
   ));
 
   passport.serializeUser(function(user, done) {
