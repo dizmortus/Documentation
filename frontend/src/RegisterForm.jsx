@@ -3,12 +3,18 @@ import api from './services/api';
 
 const RegisterForm = ({ onRegister }) => {
     const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
 
     const handleRegister = (e) => {
         e.preventDefault();
-        api.post('/api/auth/register', { username, password })
+        if (password !== confirmPassword) {
+            setError('Пароли не совпадают.');
+            return;
+        }
+        api.post('/api/auth/register', { username, email, password })
             .then(response => {
                 alert("Регистрация прошла успешно!")
                 onRegister(response.data); // обработка успешной регистрации
@@ -34,10 +40,30 @@ const RegisterForm = ({ onRegister }) => {
             </div>
             <div>
                 <input
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    required
+                    className="auth-input"
+                />
+            </div>
+            <div>
+                <input
                     type="password"
                     placeholder="Пароль"
                     value={password}
                     onChange={e => setPassword(e.target.value)}
+                    required
+                    className="auth-input"
+                />
+            </div>
+            <div>
+                <input
+                    type="password"
+                    placeholder="Повторите пароль"
+                    value={confirmPassword}
+                    onChange={e => setConfirmPassword(e.target.value)}
                     required
                     className="auth-input"
                 />

@@ -7,8 +7,8 @@ const jwt = require("jsonwebtoken");
 
 router.use(function (req, res, next) {
   res.header(
-    "Access-Control-Allow-Headers",
-    "x-access-token, Origin, Content-Type, Accept"
+      "Access-Control-Allow-Headers",
+      "x-access-token, Origin, Content-Type, Accept"
   );
   next();
 });
@@ -21,20 +21,17 @@ router.get("/check-auth", async (req, res) => {
   }
 
   try {
-    // Проверка и верификация токена
     jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
       if (err) {
         console.error("Token verification failed:", err);
         return res.status(401).json({ message: "Unauthorized! Invalid token provided!" });
       }
 
-      // Проверка наличия пользователя в базе данных
       const user = await User.findByPk(decoded.id);
       if (!user) {
         return res.status(404).json({ message: "User not found!" });
       }
 
-      // Возвращаем информацию о пользователе
       return res.json({
         id: user.id,
         username: user.username,
@@ -48,36 +45,35 @@ router.get("/check-auth", async (req, res) => {
 });
 
 router.post("/register", async (req, res) => {
-  const { username, password } = req.body;
+  const { username, email, password } = req.body;
   try {
-    const user = await User.create({ username, password, role: "user" });
+    const user = await User.create({ username, email, password, role: "user" });
     res.status(201).json(user);
   } catch (err) {
-    res.status(400).json({ error: "Username already exists" });
+    if (err.name === 'SequelizeUniqueConstraintError') {
+      res.status(400).json({ error: "Username or email already exists" });
+    } else {
+      res.status(500).json({ error: "Internal Server Error" });
+    }
   }
 });
 
-
 router.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
-
-
     if (err) return next(err);
     if (!user) return res.status(401).json({ error: info.message });
 
     req.login(user, async (err) => {
       if (err) return next(err);
 
-
       const token = jwt.sign(
-        { id: user.id, role: user.role },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: +process.env.JWT_EXPIRATION,
-        }
+          { id: user.id, role: user.role },
+          process.env.JWT_SECRET,
+          {
+            expiresIn: +process.env.JWT_EXPIRATION,
+          }
       );
       let refreshToken = await RefreshToken.createToken(user);
-
 
       return res.json({
         user: {
@@ -91,6 +87,7 @@ router.post("/login", (req, res, next) => {
     });
   })(req, res, next);
 });
+
 router.post("/refreshToken", async (req, res, next) => {
   const { refreshToken: requestToken } = req.body;
 
@@ -131,12 +128,14 @@ router.post("/refreshToken", async (req, res, next) => {
     return res.status(500).send({ message: err });
   }
 });
+
 router.get("/logout", (req, res) => {
   req.logout((err) => {
     if (err) return next(err);
     res.json({ message: "Logged out" });
   });
 });
+
 router.get("/user", (req, res) => {
   if (req.isAuthenticated()) {
     res.json(req.user);
@@ -144,4 +143,5 @@ router.get("/user", (req, res) => {
     res.status(401).json({ message: "Unauthorized" });
   }
 });
+
 module.exports = router;
