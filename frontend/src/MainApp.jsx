@@ -254,9 +254,7 @@ function MainApp() {
                         </div>
                     ))}
                 </div>
-                <div className="comments-section">
                     <Comments pageId={0} />
-                </div>
 
             </div>
             <footer>
