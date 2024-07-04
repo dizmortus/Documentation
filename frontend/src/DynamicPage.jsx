@@ -17,7 +17,7 @@ function DynamicPage() {
     }
 
     return (
-        <div>
+        <div className='NewPagess'>
             <h2>{page.title}</h2>
             <div dangerouslySetInnerHTML={{ __html: page.content }} />
             <Comments pageId={page.id} /> {/* Pass pageId to Comments component */}
