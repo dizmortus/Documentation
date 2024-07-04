@@ -3,14 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+//import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import LoginForm from './LoginForm.jsx';
 import RegisterForm from './RegisterForm.jsx';
 import TokenService from './services/TokenService.js';
 import Comments from './Comments.jsx';
-import axios from 'axios';
-import './styles.css';
 import api from "./services/api";
-import SearchModal from './SearchModal.js';
+import SearchModal from './SearchModal.jsx';
+import './styles.css';
 
 const Modal = ({ show, onClose, className, children }) => {
     if (!show) return null;
@@ -25,7 +25,6 @@ const Modal = ({ show, onClose, className, children }) => {
     );
 };
 
-
 function MainApp() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
@@ -37,7 +36,7 @@ function MainApp() {
     const pageCount = useSelector(state => state.pages.pageCount);
     const user = useSelector(state => state.user.user);
     const dispatch = useDispatch();
-    
+
     const [showSearchModal, setShowSearchModal] = useState(false);
 
     const handleOpenSearchModal = () => {
@@ -47,6 +46,7 @@ function MainApp() {
     const handleCloseSearchModal = () => {
         setShowSearchModal(false);
     };
+
 
     useEffect(() => {
         const fetchPages = async () => {
@@ -163,10 +163,10 @@ function MainApp() {
     return (
         <div className="app">
             <header>
+                
                 <h1>Техническая документация</h1>
-                <button onClick={handleOpenSearchModal}>Поиск</button>
-                <p>Количество страниц: {pageCount}</p>
                 <div className="auth-buttons">
+                    <button onClick={handleOpenSearchModal} className="auth-button">Поиск</button>
                     {user ? (
                         <>
                             {user?.role === 'admin' && (
@@ -193,11 +193,14 @@ function MainApp() {
                             Мы стремимся создать удобную и интуитивно понятную платформу, которая облегчит вам процесс поиска и изучения информации.
                             Благодаря функциональному интерфейсу и удобной навигации, вы сможете быстро находить нужные разделы и статьи. Присоединяйтесь к нашему сообществу и начинайте свое путешествие в мир знаний и новых возможностей!
                         </article>
+                        <Modal show={showSearchModal} onClose={handleCloseSearchModal}>
+                            <SearchModal isOpen={showSearchModal} onClose={handleCloseSearchModal} />
+                        </Modal>
                         <Modal show={showLoginForm} onClose={() => setShowLoginForm(false)}>
-                                <LoginForm onLogin={handleLogin} />
+                            <LoginForm onLogin={handleLogin} />
                         </Modal>
                         <Modal show={showRegisterForm} onClose={() => setShowRegisterForm(false)}>
-                                <RegisterForm onRegister={handleRegister} />
+                            <RegisterForm onRegister={handleRegister} />
                         </Modal>
                         {user?.role === 'admin' && (
                             <Modal show={showModal} onClose={handleCloseModal}>
@@ -212,6 +215,14 @@ function MainApp() {
                                     />
                                     <CKEditor
                                         editor={ClassicEditor}
+                                        config={{
+                                            plugins: [...ClassicEditor.builtinPlugins ],
+                                            toolbar: [
+                                                'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote',
+                                                '|', 'insertTable', 'tableColumn', 'tableRow', 'mergeTableCells',
+                                                '|', 'undo', 'redo'
+                                            ]                                        
+                                        }}
                                         data={content}
                                         onChange={(event, editor) => {
                                             const data = editor.getData();
@@ -246,12 +257,12 @@ function MainApp() {
                 <div className="comments-section">
                     <Comments pageId={0} />
                 </div>
-                
+
             </div>
             <footer>
-                <article>Кирилл навалил говна в мейн окно</article><a href='https://www.alfabank.by/share?transferLinkId=6683b4b751868126136981ee&version=INSNC3'>(тык)</a>
+                <article>Сделано во время практики в InDev.by
+                </article>
             </footer>
-            <SearchModal isOpen={showSearchModal} onClose={handleCloseSearchModal} />
         </div>
     );
 }

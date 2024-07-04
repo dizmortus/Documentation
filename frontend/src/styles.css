@@ -100,7 +100,8 @@ header {
 }
 
 .button-edit-with-image,
-.button-delete-with-image {
+.button-delete-with-image,
+.button-search-with-image {
   background: none;
   border: none;
   cursor: pointer;
@@ -116,6 +117,10 @@ header {
 
 .button-delete-with-image {
   background-image: url('images/close.png');
+  background-size: cover;
+}
+.button-search-with-image {
+  background-image: url('images/loupe.png');
   background-size: cover;
 }
 
@@ -154,12 +159,13 @@ header {
 
 .close-button {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 0;
+  right: 0;
   background: none;
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
+  color: #ff4d4d;
 }
 
 .modal-content {
@@ -260,7 +266,6 @@ header {
   padding: 20px;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: 300px;
   margin: 20px auto;
   text-align: center;
 }
@@ -357,3 +362,49 @@ footer a:hover {
   flex-direction: row-reverse;
 }
 
+
+.modal-content input {
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.modal-content button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.modal-content button:hover {
+  background-color: #0056b3;
+}
+
+.search-results {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.search-result-item {
+  margin-bottom: 10px;
+}
+
+.search-result-item a {
+  display: block;
+  text-decoration: none;
+  color: #333;
+  font-size: 18px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.search-result-item a:hover {
+  background-color: #e2e6ea;
+}
