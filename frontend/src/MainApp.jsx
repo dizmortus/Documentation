@@ -249,7 +249,7 @@ function MainApp() {
                 
             </div>
             <footer>
-                <article>Кирилл навалил говна в мейн окно</article><a href='https://www.alfabank.by/share?transferLinkId=6683b4b751868126136981ee&version=INSNC3'>(тык)</a>
+                <article>БНТУ</article><a href='https://www.alfabank.by/share?transferLinkId=6683b4b751868126136981ee&version=INSNC3'>(тык)</a>
             </footer>
             <SearchModal isOpen={showSearchModal} onClose={handleCloseSearchModal} />
         </div>

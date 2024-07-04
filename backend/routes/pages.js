@@ -27,6 +27,7 @@ router.post('/', verifyToken, checkRole('admin'), async (req, res) => {
 
 router.put('/:id', verifyToken, checkRole('admin'), async (req, res) => {
     const { title, content } = req.body;
+    const updatedBy = req.user.id; // Получение ID пользователя из токена
     const pageId = req.params.id;
 
     if (!title || !content) return res.status(400).send('Title and content are required');
@@ -37,9 +38,12 @@ router.put('/:id', verifyToken, checkRole('admin'), async (req, res) => {
 
         page.title = title;
         page.content = content;
+        page.updatedBy = updatedBy; // Обновление поля updatedBy
+        page.updatedAt = new Date(); // Обновление поля updatedAt
+
         await page.save();
 
-        res.status(200).json({ id: page.id, title: page.title, content: page.content });
+        res.status(200).json({ id: page.id, title: page.title, content: page.content, updatedAt: page.updatedAt, updatedBy: page.updatedBy });
     } catch (err) {
         console.error(err);
         res.status(500).send('Error updating page');
