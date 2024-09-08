@@ -6,5 +6,9 @@
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^42.0.0",
     "eslint": "^9.5.0"
+  },
+  "devDependencies": {
+    "webpack": "^5.x.x",
+    "webpack-cli": "^5.1.4"
   }
 }
