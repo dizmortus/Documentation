@@ -1,0 +1,24 @@
+# .railway
+version: 1
+services:
+  - name: backend
+    type: node
+    build:
+      command: |
+        cd backend
+        npm install
+    start:
+      command: |
+        cd backend
+        npm start
+  - name: frontend
+    type: node
+    build:
+      command: |
+        cd frontend
+        npm install
+        npm run build
+    start:
+      command: |
+        cd frontend
+        npm start
