@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build",
+    "start": "cd backend && npm start"
+  },
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^42.0.0",
     "eslint": "^9.5.0"
