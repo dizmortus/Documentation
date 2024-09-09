@@ -2,10 +2,12 @@ import axios from "axios";
 import TokenService from "./TokenService";
 
 const instance = axios.create({
+  baseURL: "http://localhost:3000", // Укажите базовый URL сервера
   headers: {
     "Content-Type": "application/json",
   },
 });
+
 
 instance.interceptors.request.use(
   (config) => {
