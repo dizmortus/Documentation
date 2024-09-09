@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
   entry: './src/index.js', // Точка входа приложения
@@ -30,6 +31,14 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: './src/index.html' // Шаблон для HTML-файла
+    }),
+    new HtmlWebpackPlugin({
+      template: './src/index.html'
+    }),
+    new webpack.DefinePlugin({
+      'process.env': {
+        REACT_APP_API_URL: JSON.stringify(process.env.REACT_APP_API_URL || 'http://localhost:3000')
+      }
     })
   ],
   devServer: {
