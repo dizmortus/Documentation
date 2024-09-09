@@ -48,6 +48,20 @@ function MainApp() {
     };
 
 
+        useEffect(() => {
+            // Тестовый запрос к бэкенду
+            const checkBackendConnection = async () => {
+                try {
+                    const response = await api.get('/api/ping'); // Убедитесь, что у вас есть этот маршрут на бэкенде
+                    console.log('Connection to backend is successful:', response.data);
+                } catch (error) {
+                    console.error('Error connecting to backend:', error.message);
+                }
+            };
+
+            checkBackendConnection();
+        }, []);
+
     useEffect(() => {
         const fetchPages = async () => {
             try {

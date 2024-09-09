@@ -37,7 +37,13 @@ db.sequelize.sync().then(() => {
   console.log("Database synchronized");
 });
 
+const router = express.Router();
 
+router.get('/ping', (req, res) => {
+  res.json({ message: 'Backend is running' });
+});
+
+module.exports = router;
 
 
 app.use('/api/auth', require('./routes/auth'));
