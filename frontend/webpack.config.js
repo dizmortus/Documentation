@@ -35,6 +35,9 @@ module.exports = {
   devServer: {
     contentBase: path.join(__dirname, 'build'),
     compress: true,
-    port: 9000
+    port: 9000,
+    proxy: {
+      '/api': 'http://localhost:3000' // Проксирование запросов на бэкенд
+    }
   }
-};
+  };
