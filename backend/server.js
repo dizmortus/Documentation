@@ -10,7 +10,7 @@ require('dotenv').config(); // Загрузка переменных окруж�
 const app = express(); // Экземпляр приложения
 
 const corsOptions = {
-  origin: ['https://documentation-ykq5.onrender.com'], // Замените на ваш домен Render
+  origin: ['*'], // Замените на ваш домен Render
   credentials: true, // Для поддержки сессий
 };
 
