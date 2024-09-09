@@ -8,7 +8,7 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
   dialectOptions: {
     ssl: {
       require: true, // Обязательно использовать SSL
-      rejectUnauthorized: false // Разрешить небезопасные сертификаты, если необходимо
+      rejectUnauthorized: true // Разрешить небезопасные сертификаты, если необходимо
     }
   }
 });
