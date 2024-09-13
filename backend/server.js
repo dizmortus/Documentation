@@ -37,6 +37,10 @@ const db = require('./config/database');
 db.sequelize.sync().then(() => {
   console.log("Database synchronized");
 });
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url} - ${new Date().toISOString()}`);
+  next(); // Обязательно вызываем next(), чтобы передать управление дальше
+});
 
 const router = express.Router();
 
