@@ -10,7 +10,7 @@ require('dotenv').config(); // Загрузка переменных окруж�
 const app = express(); // Экземпляр приложения
 
 const corsOptions = {
-  origin: ['https://documentation-5o5l.onrender.com'], // Укажите фронтенд URL
+  origin: ['https://documentation-2zzt.onrender.com'], // Укажите фронтенд URL https://documentation-5o5l.onrender.com
   credentials: true, // Для поддержки кук и сессий
 };
 
